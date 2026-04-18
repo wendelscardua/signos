@@ -1,0 +1,225 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# converts a .ldtk map into a .s
+# inputs:
+# - .ldtk filename
+# - .s filename
+
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+
+  gem 'thor'
+  gem 'pry'
+  gem 'rubocop'
+  gem 'solargraph'
+end
+
+require 'json'
+require 'thor'
+require 'pry'
+
+class LdtkTool < Thor
+  def self.exit_on_failure?
+    true
+  end
+
+  desc 'convert ASM_FILE LDTK_FILE', 'Generates asm file with levels data based on LDtk file'
+  method_option :bank, type: :string, required: false
+  def convert(asm_file, ldtk_file)
+    bank = options[:bank] || '.prg_rom_fixed'
+    ldtk_data = LdtkReader.new(ldtk_file)
+
+    File.open(asm_file, 'wb') do |asm|
+      asm.puts %Q(.section #{bank},"aR",@progbits)
+
+      enum_names = []
+
+      ldtk_data.enums.each do |enum|
+        enum_names << enum.name
+        enum.values.each.with_index do |value, index|
+          asm.puts ".weak #{enum.name}_#{value}"
+          asm.puts "#{enum.name}_#{value} = #{index}"
+        end
+      end
+
+      asm.puts '.global levels'
+      asm.puts 'levels:'
+
+      ldtk_data.levels.each do |level|
+        asm.puts ".word #{level.id}"
+      end
+
+      # rubocop:disable Style/CombinableLoops
+      ldtk_data.levels.each do |level|
+        asm.puts "#{level.id}:"
+        # XXX: all levels are 256x240
+        # asm.puts ".byte #{level.horizontal? ? 0 : 1}, #{level.horizontal? ? level.columns : level.rows}"
+
+        write_entity(asm, level, 'Player', enum_names)
+        write_entity(asm, level, 'Goal', enum_names)
+        write_entities(asm, level, 'Pushable', enum_names)
+        write_entities(asm, level, 'Door', enum_names)
+        write_entities(asm, level, 'Key', enum_names)
+        write_entities(asm, level, 'SpawnPoint', enum_names)
+        write_entities(asm, level, 'Button', enum_names)
+
+        level.rows.times do |row|
+          row_bytes = Array.new(level.columns) { |column| byte(level.metatiles[column][row]) }.join(', ')
+          asm.puts ".byte #{row_bytes}"
+        end
+      end
+      # rubocop:enable Style/CombinableLoops
+    end
+  end
+
+  desc 'navigate LDTK_FILE', 'Reads a ldtk file and opens a console for navigating the parsed object'
+  def navigate(ldtk_file)
+    ldtk_data = LdtkReader.new(ldtk_file)
+
+    binding.pry
+  end
+
+  private
+
+  def write_entity(output, level, entity_name, enum_names)
+    entity = level.entities.find do |entity|
+      entity.name == entity_name
+    end
+
+    raise "Level #{level.id} has no entity #{entity_name}" unless entity
+
+    output.puts ".byte #{entity.row} * 16 + #{entity.column} ; #{entity_name}"
+    enum_names.each do |enum_name|
+      if entity.respond_to?(enum_name)
+        output.puts ".byte #{enum_name}_#{entity.send(enum_name)}"
+      end
+    end
+  end
+
+  def write_entities(output, level, entity_name, enum_names)
+    entities = level.entities.select { |entity| entity.name == entity_name }
+    output.puts ".byte #{entities.size} ; #{entity_name} list"
+    entities.each do |entity|
+      output.puts ".byte #{entity.row} * 16 + #{entity.column}"
+      enum_names.each do |enum_name|
+        if entity.respond_to?(enum_name)
+          output.puts ".byte #{enum_name}_#{entity.send(enum_name)}"
+        end
+      end
+    end
+  end
+
+  def labelify(tmx_name)
+    tmx_name.tr('-.', '__')
+  end
+
+  def numberify(coordinate)
+    coordinate.to_f.round.to_i
+  end
+
+  def coalesce(coordinate)
+    (coordinate + 4) & ~0b111
+  end
+
+  def byte(byte)
+    format('$%02x', byte)
+  end
+
+  def word(word)
+    format('$%04x', word)
+  end
+end
+
+# Represents a parsed LDtk world
+class LdtkReader
+  attr_reader :ldtk_file,
+              :data,
+              :entity_names,
+              :enums,
+              :levels
+
+  def initialize(ldtk_file)
+    @ldtk_file = ldtk_file
+    @data = JSON.parse(File.read(ldtk_file))
+    @entity_names = data.dig('defs', 'entities').map { |ent| ent['identifier'] }
+    @enums = data.dig('defs', 'enums').map { |enum| Enum.new(enum) }
+    @levels = data['levels'].map { |level_data| Level.new(level_data) }
+  end
+
+  # Represents an Enum
+  class Enum
+    attr_reader :name, :values
+
+    def initialize(enum_data)
+      @name = enum_data['identifier']
+      @values = enum_data['values'].map { |value| value['id'] }
+    end
+  end
+
+  # Represents an Entity
+  class Entity
+    attr_reader :name, :x, :y, :row, :column, :fields
+
+    def initialize(entity_data)
+      @name = entity_data['__identifier']
+      @column, @row = entity_data['__grid']
+      @x, @y = entity_data['px']
+      @fields = entity_data['fieldInstances']
+      @fields.each do |field|
+        define_singleton_method field['__identifier'] do
+          field['__value']
+        end
+      end
+    end
+  end
+
+  # Represents a single LDtk level
+  class Level
+    attr_reader :level_data,
+                :id,
+                :entities,
+                :tiles,
+                :metatiles,
+                :rows,
+                :columns
+
+    def initialize(level_data)
+      @level_data = level_data
+      @id = level_data['identifier']
+      @entities = level_data['layerInstances'].find { |layer| layer['__type'] == 'Entities' }
+                                              &.fetch('entityInstances')
+                                              &.map { |entity| Entity.new(entity) }
+      @tiles = level_data['layerInstances'].find { |layer| layer['__type'] == 'Tiles' }
+      @columns = @tiles['__cWid']
+      @rows = @tiles['__cHei']
+
+      grid_size = @tiles['__gridSize']
+
+      raise "Wrong grid size for level #{@id}" if grid_size != 16
+      raise "Level #{@id} is too large" if @columns > 16 && @rows > 15
+
+      @metatiles = Array.new(@columns) { Array.new(@rows) { 0 } }
+
+      level_data['layerInstances'].each do |layer|
+        [*layer['autoLayerTiles'], *layer['gridTiles']].each do |tile|
+          tile_column = tile['px'][0] / grid_size
+          tile_row = tile['px'][1] / grid_size
+          metatiles[tile_column][tile_row] = tile['t'] if tile['t'] != 0
+        end
+      end
+    end
+
+    def horizontal?
+      !vertical?
+    end
+
+    def vertical?
+      @rows > 15
+    end
+  end
+end
+
+LdtkTool.start

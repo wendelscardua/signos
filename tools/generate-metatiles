@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# converts a .map metatile into a .s
+# inputs:
+# - .map filename
+# - .s filename
+
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+
+  gem 'thor'
+end
+
+require 'thor'
+require_relative './nexxt'
+
+# Tool for converting a metatile map into an assembly file
+class GenerateMetatiles < Thor
+  def self.exit_on_failure?
+    true
+  end
+
+  desc 'generate ASM_FILE MAP_FILE', 'Generates asm file based on NEXXT map'
+  method_option :bank, type: :string, required: false
+
+  def generate(s_file, map_file)
+    syntax = options[:syntax]
+
+    bank = options[:bank] || '.prg_rom_fixed'
+
+    bytes = File.open(map_file, 'rb', &:read).unpack('C*')
+    map = NEXXT::MapFile.new(bytes)
+
+    File.open(s_file, 'w') do |f|
+      f.puts <<~PREAMBLE
+        .section #{bank}
+        .global metatiles_ul, metatiles_ur, metatiles_dl, metatiles_dr, metatiles_attr
+      PREAMBLE
+
+      map.metatiles
+         .map(&:to_a)
+         .map {|ul, ur, dl, dr, attr| [ul, ur, dl, dr, attr * 0b01010101]}
+         .transpose
+         .map { |metabytes| metabytes.map { |b| format('$%02x', b) }.join(', ') }
+         .zip(%w[ul ur dl dr attr])
+         .each { |metabytes, type| f.puts "metatiles_#{type}: .byte #{metabytes}" }
+    end
+  end
+end
+
+GenerateMetatiles.start
