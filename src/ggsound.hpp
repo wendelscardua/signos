@@ -3,9 +3,11 @@
 #include "common.hpp"
 #include "soundtrack.hpp"
 
-#define FEATURE_DPCM
+// #define FEATURE_DPCM
 
 namespace GGSound {
+  constexpr u8 BANK = 2;
+
   struct Track {
     u16 ntsc_tempo;
     u16 pal_tempo;
@@ -51,25 +53,27 @@ namespace GGSound {
   };
 
   // Initialize sound engine
-  void init(Region region, const Track *song_list[], const Track *sfx_list[],
-            const void *instruments[],
+  __attribute__((noinline)) void init(Region region, const Track *song_list[],
+                                      const Track *sfx_list[],
+                                      const void *instruments[]
 #ifdef FEATURE_DPCM
-            const void *dpcm_pointers[],
+                                      ,
+                                      const void *dpcm_pointers[]
 #endif
-            u8 bank);
+  );
 
   // Kill all active streams and halt sound
-  void stop();
+  __attribute__((noinline)) void stop();
 
   // Plays a song
-  void play_song(Song song);
+  __attribute__((noinline)) void play_song(Song song);
 
   // Plays a sound effect with a given priority
-  void play_sfx(SFX sfx, SFXPriority priority);
+  __attribute__((noinline)) void play_sfx(SFX sfx, SFXPriority priority);
 
   // Pauses a song
-  void pause();
+  __attribute__((noinline)) void pause();
 
   // Resumes a song
-  void resume();
+  __attribute__((noinline)) void resume();
 } // namespace GGSound

@@ -42,9 +42,9 @@ static void main_init() {
 
   {
     {
-      ScopedBank bank(GET_BANK(song_list));
-      GGSound::init(GGSound::Region::NTSC, song_list, sfx_list, instrument_list,
-                    NULL, GET_BANK(song_list));
+      ScopedBank bank(GGSound::BANK);
+      GGSound::init(GGSound::Region::NTSC, song_list, sfx_list,
+                    instrument_list);
     }
   }
 

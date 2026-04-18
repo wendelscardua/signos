@@ -2,12 +2,6 @@
 
 #include "common.hpp"
 #include <mapper.h>
-#define GET_BANK(symbol)                                                       \
-  []() {                                                                       \
-    register u8 bank asm("a");                                                 \
-    asm("ld%0 #mos24bank(" #symbol ")\n" : "=r"(bank) : "r"(bank));            \
-    return bank;                                                               \
-  }()
 
 template <typename Func>
 __attribute__((noinline, section(".prg_rom_fixed.text"))) void

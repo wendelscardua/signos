@@ -1,8 +1,9 @@
 #include "ggsound.hpp"
+#include "bank-helper.hpp"
 #include <peekpoke.h>
 
-#pragma clang section text = ".prg_rom_2.ggsound.text"
-#pragma clang section rodata = ".prg_rom_2.ggsound.rodata"
+#pragma clang section text = ".prg_rom_fixed.text.ggsound"
+#pragma clang section rodata = ".prg_rom_fixed.rodata.ggsound"
 
 extern "C" u8 sound_param_byte_0;
 extern "C" u8 sound_param_byte_1;
@@ -22,14 +23,13 @@ namespace GGSound {
     extern "C" void resume_song();
   } // namespace Wrapper
 
-  __attribute__((noinline)) void init(Region arg_region,
-                                      const Track *arg_song_list[],
-                                      const Track *arg_sfx_list[],
-                                      const void *arg_instruments[],
+  void init(Region arg_region, const Track *arg_song_list[],
+            const Track *arg_sfx_list[], const void *arg_instruments[]
 #ifdef FEATURE_DPCM
-                                      const void *dpcm_pointers[],
+            ,
+            const void *dpcm_pointers[]
 #endif
-                                      u8 arg_bank) {
+  ) {
     sound_param_byte_0 = (u8)arg_region;
     sound_param_word_0 = (void *)arg_song_list;
     sound_param_word_1 = (void *)arg_sfx_list;
@@ -37,22 +37,34 @@ namespace GGSound {
 #ifdef FEATURE_DPCM
     sound_param_word_3 = (void *)dpcm_pointers;
 #endif
-    sound_bank = arg_bank;
+    sound_bank = BANK;
+    ScopedBank ggsound_bank(BANK);
     sound_initialize();
   }
 
-  void stop() { sound_stop(); }
-  void pause() { pause_song(); }
-  void resume() { resume_song(); }
+  void stop() {
+    ScopedBank ggsound_bank(BANK);
+    sound_stop();
+  }
+  void pause() {
+    ScopedBank ggsound_bank(BANK);
+    pause_song();
+  }
+  void resume() {
+    ScopedBank ggsound_bank(BANK);
+    resume_song();
+  }
 
   void play_song(Song song) {
     sound_param_byte_0 = (u8)song;
+    ScopedBank ggsound_bank(BANK);
     Wrapper::play_song();
   }
 
   void play_sfx(SFX sfx, SFXPriority priority) {
     sound_param_byte_0 = (u8)sfx;
     sound_param_byte_1 = (u8)priority;
+    ScopedBank ggsound_bank(BANK);
     Wrapper::play_sfx();
   }
 } // namespace GGSound

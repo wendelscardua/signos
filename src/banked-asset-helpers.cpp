@@ -6,18 +6,18 @@
 
 __attribute__((noinline, section(".prg_rom_fixed"))) void
 banked_play_song(Song song) {
-  ScopedBank scopedBank(GET_BANK(song_list));
+  ScopedBank scopedBank(GGSound::BANK);
   GGSound::play_song(song);
 }
 
 __attribute__((noinline, section(".prg_rom_fixed"))) void
 banked_play_sfx(SFX sfx, GGSound::SFXPriority priority) {
-  ScopedBank scopedBank(GET_BANK(instrument_list));
+  ScopedBank scopedBank(GGSound::BANK);
   GGSound::play_sfx(sfx, priority);
 }
 
 __attribute__((noinline, section(".prg_rom_fixed"))) void banked_stop_song() {
-  ScopedBank scopedBank(GET_BANK(song_list));
+  ScopedBank scopedBank(GGSound::BANK);
   GGSound::stop();
 }
 
