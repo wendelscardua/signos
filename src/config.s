@@ -1,5 +1,6 @@
                                 ; config.s
         .global __chr_rom_size
+        .global __prg_rom_size
         .global __prg_nvram_size
         .global __four_screen
         .global __mirroring

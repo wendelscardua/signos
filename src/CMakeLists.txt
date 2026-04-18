@@ -109,3 +109,20 @@ target_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+
+include(FetchContent)
+
+FetchContent_Declare(
+  mesen-integration
+  URL https://github.com/wendelscardua/mesen-integration/releases/download/v0.1.4/mesen-integration-src.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(mesen-integration)
+
+target_include_directories(SourceObj PRIVATE "${mesen-integration_SOURCE_DIR}/include")
+
+target_link_libraries(SourceObj
+  PRIVATE
+  mesen-integration
+)
