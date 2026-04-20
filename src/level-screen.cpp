@@ -2,6 +2,9 @@
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
 #include "ggsound.hpp"
+#ifndef NDEBUG
+#include "mesen-integration.hpp"
+#endif
 #include "metasprites.hpp"
 #include "metatiles.hpp"
 #include <nesdoug.h>
@@ -48,6 +51,7 @@ __attribute__((noinline)) void LevelScreen::loop() {
   Robot &player = level.robots[0];
   while (current_game_state == GameState::LevelScreen) {
     ppu_wait_nmi();
+    START_MESEN_WATCH("level");
     pad_poll(0);
     u8 held = pad_state(0);
     u8 pressed = get_pad_new(0);
@@ -94,9 +98,11 @@ __attribute__((noinline)) void LevelScreen::loop() {
           player.target_x = player.x;
           player.target_y = player.y;
         } else {
-          level.map[player.coord.index] &= ~MapContent::SolidBit;
+          level.map[player.coord.index] &=
+              ~(u8)(MapContent::SolidBit | MapContent::RobotBit);
           player.coord.index += (s8)player.direction;
-          level.map[player.coord.index] |= MapContent::SolidBit;
+          level.map[player.coord.index] |=
+              (u8)(MapContent::SolidBit | MapContent::RobotBit);
         }
       }
       break;
@@ -107,10 +113,43 @@ __attribute__((noinline)) void LevelScreen::loop() {
     case Robot::State::Executing:
       break;
     }
+    START_MESEN_WATCH("robots");
     for (u8 i = 0; i < level.num_robots; ++i) {
       level.robots[i].update();
     }
+    STOP_MESEN_WATCH("robots");
+    START_MESEN_WATCH("paths");
+    for (u8 i = 0; i < level.num_paths; ++i) {
+      START_MESEN_WATCH("path");
+      auto &path = level.paths[i];
+      // first coord on the path is the button - batteries are along the way
+      auto button_coord = path[0];
+      if (level.energy[button_coord.index] == 0) {
+        // if no energy, but a bot is on it, we should energize the path
+        if (level.map[button_coord.index] & MapContent::RobotBit) {
+          // energize the path
+          for (u8 j = 0; path[j].index != 0xff; ++j) {
+            auto coord = path[j];
+            level.energy[coord.index]++;
+            // TODO: update metatile
+          }
+        }
+      } else {
+        // if energy, but no bot is on it, we should de-energize the path
+        if (!(level.map[button_coord.index] & MapContent::RobotBit)) {
+          // de-energize the path
+          for (u8 j = 0; path[j].index != 0xff; ++j) {
+            auto coord = path[j];
+            level.energy[coord.index]--;
+            // TODO: update metatile
+          }
+        }
+      }
+      STOP_MESEN_WATCH("path");
+    }
+    STOP_MESEN_WATCH("paths");
     render_sprites();
+    STOP_MESEN_WATCH("level");
   }
 }
 

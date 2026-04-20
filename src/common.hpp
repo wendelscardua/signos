@@ -28,6 +28,8 @@ enum MapContent : u8 {
   EmptyBit = 0,
   SolidBit = 1,
   DoorBit = 2,
+  ButtonBit = 4,
+  RobotBit = 8,
 };
 
 enum class GameState : u8 {

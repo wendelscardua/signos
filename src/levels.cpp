@@ -34,10 +34,10 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
 
   cursor = (char *)(cursor) + ROWS * COLUMNS;
 
-  u8 read_paths = *(u8 *)cursor;
+  num_paths = *(u8 *)cursor;
   cursor = (u8 *)(cursor) + 1;
-  for (u8 i = 0; i < read_paths; i++) {
-    paths[i] = (Coord *)cursor;
+  for (u8 i = 0; i < num_paths; i++) {
+    paths[i] = *(Coord **)cursor;
     cursor = (Coord *)(cursor) + 1;
   }
 
@@ -46,27 +46,33 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
     map[index] = EmptyBit;
     energy[index] = 0;
 
-    if (metatile == 0x19 || metatile == 0x1a) { // closed door
-      map[index] |= MapContent::SolidBit | MapContent::DoorBit;
+    if (metatile == 0x18 || metatile == 0x1a) { // closed door
+      map[index] |= (u8)(MapContent::SolidBit | MapContent::DoorBit);
     }
 
     if (metatile == 0x03) { // glass pane
-      map[index] |= MapContent::SolidBit;
+      map[index] |= (u8)MapContent::SolidBit;
     }
 
     if (metatile == 0x14 || metatile == 0x15 || metatile == 0x16 ||
         metatile == 0x17) { // batteries
-      map[index] |= MapContent::SolidBit;
+      map[index] |= (u8)MapContent::SolidBit;
       energy[index] = metatile - 0x14;
     }
 
     if (metatile == 0x02) { // wall
-      map[index] |= MapContent::SolidBit;
+      map[index] |= (u8)MapContent::SolidBit;
+    }
+
+    if (metatile == 0x10 || metatile == 0x11 || metatile == 0x12 ||
+        metatile == 0x13) { // button
+      map[index] |= (u8)MapContent::ButtonBit;
     }
   }
 
   for (u8 i = 0; i < num_robots; i++) {
-    map[robots[i].coord.index] |= MapContent::SolidBit;
+    map[robots[i].coord.index] |=
+        (u8)(MapContent::SolidBit | MapContent::RobotBit);
   }
 }
 
@@ -77,7 +83,7 @@ Robot &Level::add_robot(Coord &coord) {
   robots[num_robots].y = 16.0_u8_8 * coord.row;
   robots[num_robots].target_x = robots[num_robots].x;
   robots[num_robots].target_y = robots[num_robots].y;
-  map[coord.index] |= MapContent::SolidBit;
+  map[coord.index] |= (u8)MapContent::SolidBit;
   num_robots++;
   return robots[num_robots - 1];
 }
