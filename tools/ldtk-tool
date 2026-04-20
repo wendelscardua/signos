@@ -55,16 +55,12 @@ class LdtkTool < Thor
       # rubocop:disable Style/CombinableLoops
       ldtk_data.levels.each do |level|
         asm.puts "#{level.id}:"
-        # XXX: all levels are 256x240
-        # asm.puts ".byte #{level.horizontal? ? 0 : 1}, #{level.horizontal? ? level.columns : level.rows}"
+        # Note: all levels are 16x10
+        # asm.puts ".byte #{level.columns}"
 
         write_entity(asm, level, 'Player', enum_names)
-        write_entity(asm, level, 'Goal', enum_names)
-        write_entities(asm, level, 'Pushable', enum_names)
-        write_entities(asm, level, 'Door', enum_names)
-        write_entities(asm, level, 'Key', enum_names)
-        write_entities(asm, level, 'SpawnPoint', enum_names)
-        write_entities(asm, level, 'Button', enum_names)
+        write_entities(asm, level, 'Robot', enum_names)
+        write_entity(asm, level, 'Exit', enum_names)
 
         level.rows.times do |row|
           row_bytes = Array.new(level.columns) { |column| byte(level.metatiles[column][row]) }.join(', ')
