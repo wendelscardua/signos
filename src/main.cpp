@@ -21,8 +21,8 @@ static void main_init() {
 
   ppu_off();
 
-  // set 8x16 sprite mode
-  oam_size(1);
+  // set 8x8 sprite mode
+  oam_size(0);
 
   bank_bg(0);
   bank_spr(1);
@@ -53,7 +53,7 @@ static void main_init() {
 int main() {
   main_init();
 
-  u8 selected_level = 0;
+  u8 selected_level = 1;
 
   while (true) {
     switch (current_game_state) {

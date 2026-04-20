@@ -2,6 +2,7 @@
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
 #include "ggsound.hpp"
+#include "metasprites.hpp"
 #include "metatiles.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
@@ -54,5 +55,56 @@ __attribute__((noinline)) void LevelScreen::loop() {
         current_game_state = GameState::TitleScreen;
       }
     }
+    render_sprites();
   }
+}
+
+__attribute__((noinline)) void LevelScreen::render_sprites() {
+  {
+    Robot &robot = level.robots[0];
+    u8 *metasprite;
+    switch (robot.direction) {
+    case Direction::East:
+      metasprite = (u8 *)metasprite_RobotRight;
+      break;
+    case Direction::West:
+      metasprite = (u8 *)metasprite_RobotLeft;
+      break;
+    case Direction::North:
+      metasprite = (u8 *)metasprite_RobotUp;
+      break;
+    case Direction::South:
+      metasprite = (u8 *)metasprite_RobotDown;
+      break;
+    default:
+      metasprite = (u8 *)metasprite_RobotRight;
+      break;
+    }
+    banked_oam_meta_spr(robot.coord.column * 16, robot.coord.row * 16,
+                        metasprite);
+  }
+  for (u8 index = 1; index < level.num_robots; ++index) {
+    Robot &robot = level.robots[index];
+    u8 *metasprite;
+    switch (robot.direction) {
+    case Direction::East:
+      metasprite = (u8 *)metasprite_OtherRobotRight;
+      break;
+    case Direction::West:
+      metasprite = (u8 *)metasprite_OtherRobotLeft;
+      break;
+    case Direction::North:
+      metasprite = (u8 *)metasprite_OtherRobotUp;
+      break;
+    case Direction::South:
+      metasprite = (u8 *)metasprite_OtherRobotDown;
+      break;
+    default:
+      metasprite = (u8 *)metasprite_OtherRobotRight;
+      break;
+    }
+    banked_oam_meta_spr(robot.coord.column * 16, robot.coord.row * 16,
+                        metasprite);
+  }
+  oam_hide_rest();
 }

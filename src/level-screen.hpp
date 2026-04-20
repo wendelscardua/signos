@@ -9,4 +9,6 @@ public:
   LevelScreen(u8 level);
   ~LevelScreen();
   void loop();
+
+  void render_sprites();
 };
