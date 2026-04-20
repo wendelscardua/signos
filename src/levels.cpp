@@ -73,6 +73,10 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
 Robot &Level::add_robot(Coord &coord) {
   robots[num_robots].coord = coord;
   robots[num_robots].direction = Direction::East;
+  robots[num_robots].x = 16.0_u8_8 * coord.column;
+  robots[num_robots].y = 16.0_u8_8 * coord.row;
+  robots[num_robots].target_x = robots[num_robots].x;
+  robots[num_robots].target_y = robots[num_robots].y;
   map[coord.index] |= MapContent::SolidBit;
   num_robots++;
   return robots[num_robots - 1];

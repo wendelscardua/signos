@@ -56,6 +56,7 @@ add_library(SourceObj
   level-screen.cpp
 
   attributes.cpp
+  robot.cpp
   levels.cpp
 
   banked-asset-helpers.s

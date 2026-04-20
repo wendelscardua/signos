@@ -45,15 +45,70 @@ __attribute__((noinline)) LevelScreen::~LevelScreen() {
 }
 
 __attribute__((noinline)) void LevelScreen::loop() {
+  Robot &player = level.robots[0];
   while (current_game_state == GameState::LevelScreen) {
     ppu_wait_nmi();
     pad_poll(0);
+    u8 held = pad_state(0);
     u8 pressed = get_pad_new(0);
-    if (pressed & (PAD_A | PAD_START)) {
+    if (pressed & PAD_SELECT) {
       {
         GGSound::stop();
         current_game_state = GameState::TitleScreen;
+        // TODO: just reset level instead?
       }
+    }
+    switch (player.state) {
+    case Robot::State::Idle:
+      if (held & PAD_UP) {
+        player.state = Robot::State::Moving;
+        player.direction = Direction::North;
+        player.target_x = player.x;
+        player.target_y = player.y - 16;
+      }
+      if (held & PAD_DOWN) {
+        player.state = Robot::State::Moving;
+        player.direction = Direction::South;
+        player.target_x = player.x;
+        player.target_y = player.y + 16;
+      }
+      if (held & PAD_LEFT) {
+        player.state = Robot::State::Moving;
+        player.direction = Direction::West;
+        player.target_x = player.x - 16;
+        player.target_y = player.y;
+      }
+      if (held & PAD_RIGHT) {
+        player.state = Robot::State::Moving;
+        player.direction = Direction::East;
+        player.target_x = player.x + 16;
+        player.target_y = player.y;
+      }
+      if (player.state == Robot::State::Moving) {
+        if ((player.coord.index + (s8)player.direction < 0 ||
+             player.coord.index + (s8)player.direction >=
+                 Level::ROWS * Level::COLUMNS ||
+             (level.map[player.coord.index + (s8)player.direction] &
+              MapContent::SolidBit) != 0)) {
+          player.state = Robot::State::Idle;
+          player.target_x = player.x;
+          player.target_y = player.y;
+        } else {
+          level.map[player.coord.index] &= ~MapContent::SolidBit;
+          player.coord.index += (s8)player.direction;
+          level.map[player.coord.index] |= MapContent::SolidBit;
+        }
+      }
+      break;
+    case Robot::State::Moving:
+      break;
+    case Robot::State::Preparing:
+      break;
+    case Robot::State::Executing:
+      break;
+    }
+    for (u8 i = 0; i < level.num_robots; ++i) {
+      level.robots[i].update();
     }
     render_sprites();
   }
@@ -80,8 +135,7 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       metasprite = (u8 *)metasprite_RobotRight;
       break;
     }
-    banked_oam_meta_spr(robot.coord.column * 16, robot.coord.row * 16,
-                        metasprite);
+    banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
   }
   for (u8 index = 1; index < level.num_robots; ++index) {
     Robot &robot = level.robots[index];
@@ -103,8 +157,7 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       metasprite = (u8 *)metasprite_OtherRobotRight;
       break;
     }
-    banked_oam_meta_spr(robot.coord.column * 16, robot.coord.row * 16,
-                        metasprite);
+    banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
   }
   oam_hide_rest();
 }

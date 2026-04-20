@@ -1,13 +1,7 @@
 #pragma once
 
 #include "common.hpp"
-
-class Robot {
-public:
-  Coord coord;
-  Direction direction;
-  void *script_pointer;
-};
+#include "robot.hpp"
 
 class Level {
 public:

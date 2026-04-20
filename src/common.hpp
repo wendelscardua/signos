@@ -20,8 +20,8 @@ union Coord {
 enum class Direction : s8 {
   North = -16,
   South = +16,
-  East = -1,
-  West = +1,
+  East = +1,
+  West = -1,
 };
 
 enum MapContent : u8 {

@@ -53,7 +53,7 @@ static void main_init() {
 int main() {
   main_init();
 
-  u8 selected_level = 1;
+  u8 selected_level = 0;
 
   while (true) {
     switch (current_game_state) {
