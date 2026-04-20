@@ -1,6 +1,7 @@
 #include "title-screen.hpp"
 #include "banked-asset-helpers.hpp"
 #include "common.hpp"
+#include "ggsound.hpp"
 #include "soundtrack.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
@@ -18,7 +19,7 @@ __attribute__((noinline)) TitleScreen::TitleScreen() {
 
   ppu_on_all();
 
-  banked_play_song(Song::Lalala);
+  GGSound::play_song(Song::Lalala);
 
   pal_fade_to(0, 4);
 }
@@ -37,8 +38,8 @@ __attribute__((noinline)) void TitleScreen::loop() {
     u8 pressed = get_pad_new(0);
     if (pressed & (PAD_A | PAD_START)) {
       {
-        banked_stop_song();
-        current_game_state = GameState::TitleScreen;
+        GGSound::stop();
+        current_game_state = GameState::LevelScreen;
       }
     }
   }

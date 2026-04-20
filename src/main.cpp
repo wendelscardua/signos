@@ -2,6 +2,7 @@
 #include "banked-asset-helpers.hpp"
 #include "common.hpp"
 #include "ggsound.hpp"
+#include "level-screen.hpp"
 #include "levels.hpp"
 #include "soundtrack-ptr.hpp"
 #include "title-screen.hpp"
@@ -11,8 +12,6 @@
 #include <peekpoke.h>
 
 GameState current_game_state;
-u8 best_moves[Level::NUM_LEVELS];
-u8 stars[Level::NUM_LEVELS];
 
 static void main_init() {
   set_prg_8000(0);
@@ -48,22 +47,23 @@ static void main_init() {
     }
   }
 
-  for (u8 i = 0; i < Level::NUM_LEVELS; i++) {
-    stars[i] = 0;
-    best_moves[i] = 0x99;
-  }
-
   asm volatile("cli");
 }
 
 int main() {
   main_init();
 
+  u8 selected_level = 0;
+
   while (true) {
     switch (current_game_state) {
     case GameState::TitleScreen: {
       TitleScreen title_screen;
       title_screen.loop();
+    } break;
+    case GameState::LevelScreen: {
+      LevelScreen level_screen(selected_level);
+      level_screen.loop();
     } break;
     }
   }

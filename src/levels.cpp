@@ -93,6 +93,10 @@ u8 Level::effective_metatile(u8 index) {
         metatile = 0x17;
       }
     }
+  } else if (index == entrance.index) {
+    metatile = 0x1c;
+  } else if (index == exit.index) {
+    metatile = 0x1d;
   }
 
   return metatile;

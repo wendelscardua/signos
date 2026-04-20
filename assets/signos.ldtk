@@ -1497,7 +1497,7 @@
 			"savedSelections": [],
 			"cachedPixelData": {
 				"opaqueTiles": "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
-				"averageColors": "f42bf43bf68af3aff42bf45cf45cf45bf45cf45cf45cf45cf45cf45cf45cf45cf47cf47cf47cf47cf57bfcb9fdb9fdb9f57cf97af57cf97afc65f092f000f42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42b"
+				"averageColors": "f42bf43bf68af3aff42bf45cf45cf45bf45cf45cf45cf45cf45cf45cf45cf45cf47cf47cf47cf47cf57bfcb9fdb9fdb9f57cf97af57cf97afc65f092f000f42bf42bf42bf42bf42bf42bf97af97af86af86af86af86af97af97af97af97afa89fa99fa99fa9afa9af42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42bf42b"
 			}
 		},
 		{
@@ -1606,20 +1606,6 @@
 							"fieldInstances": []
 						},
 						{
-							"__identifier": "Robot",
-							"__grid": [4,3],
-							"__pivot": [0,0.417],
-							"__tags": [],
-							"__tile": { "tilesetUid": 2, "x": 96, "y": 0, "w": 16, "h": 32 },
-							"__smartColor": "#BE4A2F",
-							"iid": "88d14dd0-21a0-11f1-8856-5b3e061cc897",
-							"width": 16,
-							"height": 24,
-							"defUid": 35,
-							"px": [64,55],
-							"fieldInstances": []
-						},
-						{
 							"__identifier": "Exit",
 							"__grid": [12,5],
 							"__pivot": [0,0],
@@ -1631,6 +1617,20 @@
 							"height": 16,
 							"defUid": 22,
 							"px": [192,80],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Robot",
+							"__grid": [7,7],
+							"__pivot": [0,0.417],
+							"__tags": [],
+							"__tile": { "tilesetUid": 2, "x": 96, "y": 0, "w": 16, "h": 32 },
+							"__smartColor": "#BE4A2F",
+							"iid": "88d14dd0-21a0-11f1-8856-5b3e061cc897",
+							"width": 16,
+							"height": 24,
+							"defUid": 35,
+							"px": [121,117],
 							"fieldInstances": []
 						}
 					]

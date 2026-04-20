@@ -32,6 +32,7 @@ enum MapContent : u8 {
 
 enum class GameState : u8 {
   TitleScreen,
+  LevelScreen,
 };
 
 extern GameState current_game_state;

@@ -32,7 +32,7 @@ class GenerateMetatiles < Thor
 
     bank = options[:bank] || '.prg_rom_fixed'
 
-    map = NEXXT::Parser::MapFile.read(map_file)
+    map = NEXXT::Parser::Map.read(map_file)
 
     File.open(s_file, 'w') do |f|
       f.puts <<~PREAMBLE

@@ -53,6 +53,7 @@ add_library(SourceObj
 
   main.cpp
   title-screen.cpp
+  level-screen.cpp
 
   attributes.cpp
   levels.cpp
