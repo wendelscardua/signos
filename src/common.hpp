@@ -24,40 +24,10 @@ enum class Direction : s8 {
   West = +1,
 };
 
-enum class SpawnIndex : u8 {
-  Zero,
-  One,
-  Two,
-  Three,
-};
-
-enum class PushableType : u8 {
-  Altar,
-  Crystal,
-};
-
-enum class Facing : u8 {
-  Left,
-  Right,
-};
-
-enum MapContent : u16 {
+enum MapContent : u8 {
   EmptyBit = 0,
   SolidBit = 1,
-  KeyBit = 2,
-  DoorBit = 4,
-  AltarBit = 8,
-  CrystalBit = 16,
-  PlayerBit = 32,
-  Spawner1Bit = 64,
-  Spawner2Bit = 128,
-  Spawner3Bit = 256,
-  UsedSpawner1Bit = 512,
-  UsedSpawner2Bit = 1024,
-  UsedSpawner3Bit = 2048,
-  ButtonBit = 4096,
-  SolidSet = SolidBit | DoorBit | PlayerBit,
-  PushableSet = AltarBit | CrystalBit,
+  DoorBit = 2,
 };
 
 enum class GameState : u8 {

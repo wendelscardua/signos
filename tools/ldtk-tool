@@ -22,6 +22,10 @@ require 'thor'
 require 'pry'
 
 class LdtkTool < Thor
+  BUTTON_TILES = [0x10, 0x11, 0x12, 0x13].freeze
+  CABLE_TILES = [0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F].freeze
+  BATTERY_TILES = [0x14, 0x15, 0x16, 0x17].freeze
+
   def self.exit_on_failure?
     true
   end
@@ -62,9 +66,73 @@ class LdtkTool < Thor
         write_entities(asm, level, 'Robot', enum_names)
         write_entity(asm, level, 'Exit', enum_names)
 
-        level.rows.times do |row|
-          row_bytes = Array.new(level.columns) { |column| byte(level.metatiles[column][row]) }.join(', ')
+        num_rows = level.rows
+        num_columns = level.columns
+
+        asm.puts "; metatiles"
+        num_rows.times do |row|
+          row_bytes = Array.new(num_columns) { |column| byte(level.metatiles[column][row]) }.join(', ')
           asm.puts ".byte #{row_bytes}"
+        end
+
+        # precompute the button-battery paths
+        paths = []
+        num_rows.times do |row|
+          num_columns.times do |column|
+            tile = level.metatiles[column][row]
+            if BUTTON_TILES.include?(tile)
+              # pathfinding from button to battery
+              root = [column, row]
+              queue = [root]
+              explored = Set.new([root])
+              parents = {}
+
+              tree = []
+
+              while !queue.empty? do
+                current = queue.shift
+                tile = level.metatiles[current[0]][current[1]]
+                if BATTERY_TILES.include?(tile)
+                  path = []
+                  while current != root do
+                    path.unshift(current)
+                    current = parents[current]
+                  end
+                  path.unshift(root)
+                  tree << path
+                  next
+                end
+
+                neighbors = []
+                neighbors << [current[0] - 1, current[1]] if current[0] > 0
+                neighbors << [current[0] + 1, current[1]] if current[0] < num_columns - 1
+                neighbors << [current[0], current[1] - 1] if current[1] > 0
+                neighbors << [current[0], current[1] + 1] if current[1] < num_rows - 1
+                neighbors = neighbors.select { |neighbor| [*CABLE_TILES, *BATTERY_TILES].include?(level.metatiles[neighbor[0]][neighbor[1]]) }
+                neighbors.each do |neighbor|
+                  if !explored.include?(neighbor)
+                    explored << neighbor
+                    parents[neighbor] = current
+                    queue << neighbor
+                  end
+                end
+              end
+
+              paths << tree.sort_by(&:size).flatten(1).uniq
+            end
+          end
+        end
+
+        asm.puts ".byte #{paths.size} ; number of button-battery paths"
+        paths.size.times do |i|
+          asm.puts ".word path_#{i}_#{level.id}"
+        end
+        paths.each.with_index do |path, i|
+          asm.puts "path_#{i}_#{level.id}:"
+          path.each do |coord|
+            asm.puts ".byte #{byte(coord[0] + 16 * coord[1])}"
+          end
+          asm.puts ".byte $ff ; path terminator"
         end
       end
       # rubocop:enable Style/CombinableLoops

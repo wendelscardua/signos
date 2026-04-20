@@ -1,202 +1,99 @@
 #include "levels.hpp"
 #include "common.hpp"
 
-Player::Player() : keys(0), facing(Facing::Right) {}
-
-Pushable::Pushable() : last_generation(SpawnIndex::Zero) {}
-
 __attribute__((
-    section(".prg_ram.noinit"))) u16 Level::map[Level::ROWS * Level::COLUMNS];
+    section(".prg_ram.noinit"))) u8 Level::map[Level::ROWS * Level::COLUMNS];
+__attribute__((
+    section(".prg_ram.noinit"))) u8 Level::energy[Level::ROWS * Level::COLUMNS];
 
-Level::Level(const void *level_data)
-    : num_players(0), num_pushables(0), num_doors(0), num_keys(0),
-      num_spawners(0), num_buttons(0), current_generation(SpawnIndex::Zero) {
+Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
   const void *cursor = level_data;
-  Coord &playerCoords = *(Coord *)cursor;
-  add_player(playerCoords, SpawnIndex::Zero);
+
+  // first "robot" is the player (has special treatment, like input, entrance
+  // cutscene, etc.)
+  Coord &robotCoords = *(Coord *)cursor;
+  auto &player = add_robot(robotCoords);
+
+  entrance = player.coord;
+
   cursor = (Coord *)(cursor) + 1;
 
-  goal = *(Coord *)cursor;
+  u8 read_robots = *(u8 *)cursor;
+  cursor = (u8 *)(cursor) + 1;
+  for (u8 i = 0; i < read_robots; i++) {
+    Coord &robotCoords = *(Coord *)cursor;
+    add_robot(robotCoords);
+    cursor = (Coord *)(cursor) + 1;
+  }
+
+  Coord &exitCoords = *(Coord *)cursor;
+  exit = exitCoords;
   cursor = (Coord *)(cursor) + 1;
-
-  u8 read_pushables = *(u8 *)cursor;
-  cursor = (u8 *)(cursor) + 1;
-
-  for (u8 i = 0; i < read_pushables; i++) {
-    PushableData &data = *(PushableData *)cursor;
-    cursor = (PushableData *)(cursor) + 1;
-    add_pushable(data);
-  }
-
-  u8 read_doors = *(u8 *)cursor;
-  cursor = (u8 *)(cursor) + 1;
-
-  for (u8 i = 0; i < read_doors; i++) {
-    Coord &doorCoords = *(Coord *)cursor;
-    cursor = (Coord *)(cursor) + 1;
-    add_door(doorCoords);
-  }
-
-  u8 read_keys = *(u8 *)cursor;
-  cursor = (u8 *)(cursor) + 1;
-
-  for (u8 i = 0; i < read_keys; i++) {
-    Coord &keyCoords = *(Coord *)cursor;
-    cursor = (Coord *)(cursor) + 1;
-    add_key(keyCoords);
-  }
-
-  u8 read_spawners = *(u8 *)cursor;
-  cursor = (u8 *)(cursor) + 1;
-
-  for (u8 i = 0; i < read_spawners; i++) {
-    SpawnerData &data = *(SpawnerData *)cursor;
-    cursor = (SpawnerData *)(cursor) + 1;
-    add_spawner(data);
-  }
-
-  u8 read_buttons = *(u8 *)cursor;
-  cursor = (u8 *)(cursor) + 1;
-
-  for (u8 i = 0; i < read_buttons; i++) {
-    Coord &button_coord = *(Coord *)cursor;
-    cursor = (Coord *)(cursor) + 1;
-    add_button(button_coord);
-  }
 
   metatiles = (char *)cursor;
 
+  cursor = (char *)(cursor) + ROWS * COLUMNS;
+
+  u8 read_paths = *(u8 *)cursor;
+  cursor = (u8 *)(cursor) + 1;
+  for (u8 i = 0; i < read_paths; i++) {
+    paths[i] = (Coord *)cursor;
+    cursor = (Coord *)(cursor) + 1;
+  }
+
   for (u8 index = 0; index < ROWS * COLUMNS; index++) {
     u8 metatile = *(char *)(metatiles + index);
-    // XXX: mts 1,2,4,5 are always solid, 3 doesn't appear on maps
-    map[index] =
-        (metatile > 0 && metatile < 6 ? MapContent::SolidBit : EmptyBit);
-  }
+    map[index] = EmptyBit;
+    energy[index] = 0;
 
-  for (u8 i = 0; i < num_players; i++) {
-    map[players[i].coord.index] |= MapContent::PlayerBit;
-  }
+    if (metatile == 0x19 || metatile == 0x1a) { // closed door
+      map[index] |= MapContent::SolidBit | MapContent::DoorBit;
+    }
 
-  for (u8 i = 0; i < num_doors; i++) {
-    map[doors[i].coord.index] |= MapContent::DoorBit;
-  }
+    if (metatile == 0x03) { // glass pane
+      map[index] |= MapContent::SolidBit;
+    }
 
-  for (u8 i = 0; i < num_keys; i++) {
-    map[keys[i].coord.index] |= MapContent::KeyBit;
-  }
+    if (metatile == 0x14 || metatile == 0x15 || metatile == 0x16 ||
+        metatile == 0x17) { // batteries
+      map[index] |= MapContent::SolidBit;
+      energy[index] = metatile - 0x14;
+    }
 
-  for (u8 i = 0; i < num_pushables; i++) {
-    if (pushables[i].type == PushableType::Altar) {
-      map[pushables[i].coord.index] |= MapContent::AltarBit;
-    } else {
-      map[pushables[i].coord.index] |= MapContent::CrystalBit;
+    if (metatile == 0x02) { // wall
+      map[index] |= MapContent::SolidBit;
     }
   }
 
-  for (u8 i = 0; i < num_spawners; i++) {
-    Spawner &spawner = spawners[i];
-    map[spawner.coord.index] |=
-        Level::SPAWNER_BIT_PER_GENERATION[(u8)spawner.index];
-  }
-
-  for (u8 i = 0; i < num_buttons; i++) {
-    map[buttons[i].coord.index] |= MapContent::ButtonBit;
+  for (u8 i = 0; i < num_robots; i++) {
+    map[robots[i].coord.index] |= MapContent::SolidBit;
   }
 }
 
-Player &Level::add_player(Coord &coord, SpawnIndex generation) {
-  players[num_players].coord = coord;
-  players[num_players].generation = generation;
-  players[num_players].keys = 0;
-  map[coord.index] ^= PlayerBit;
-  num_players++;
-  return players[num_players - 1];
-}
-
-void Level::delete_player(Coord &coord) {
-  for (u8 i = 0; i < num_players; i++) {
-    if (players[i].coord.index == coord.index) {
-      map[players[i].coord.index] ^= PlayerBit;
-      num_players--;
-      players[i] = players[num_players];
-      i--;
-    }
-  }
-}
-
-void Level::add_pushable(PushableData &data) {
-  pushables[num_pushables].coord = data.coord;
-  pushables[num_pushables].type = data.type;
-  num_pushables++;
-}
-
-void Level::add_spawner(SpawnerData &data) {
-  spawners[num_spawners].coord = data.coord;
-  spawners[num_spawners].index = data.index;
-  spawners[num_spawners].used = false;
-  num_spawners++;
-}
-
-void Level::add_door(Coord &coord) {
-  doors[num_doors].coord = coord;
-  num_doors++;
-}
-
-void Level::add_key(Coord &coord) {
-  keys[num_keys].coord = coord;
-  num_keys++;
-}
-
-void Level::add_button(Coord &coord) {
-  buttons[num_buttons].coord = coord;
-  num_buttons++;
+Robot &Level::add_robot(Coord &coord) {
+  robots[num_robots].coord = coord;
+  robots[num_robots].direction = Direction::East;
+  map[coord.index] |= MapContent::SolidBit;
+  num_robots++;
+  return robots[num_robots - 1];
 }
 
 u8 Level::effective_metatile(u8 index) {
   auto metatile = metatiles[index];
   auto map_content = map[index];
-  if (map_content & DoorBit) {
-    metatile = 3;
-  } else if (map_content & AltarBit) {
-    metatile = 11;
-    if ((map[index - 1] | map[index - 16] | map[index + 1] | map[index + 16]) &
-        CrystalBit) {
-      metatile = 27;
+  auto energy_content = energy[index];
+
+  if (energy_content > 0) {
+    if (map_content >= 0x05 && map_content <= 0x13) { // cables and buttons
+      metatile += 0x20; // lit up metatiles are 0x20 below the unlit ones
+    } else if (map_content >= 0x14 && map_content <= 0x17) { // batteries
+      metatile =
+          0x14 + energy_content; // battery metatiles are sorted by energy value
+      if (metatile > 0x17) {
+        metatile = 0x17;
+      }
     }
-  } else if (map_content & CrystalBit) {
-    metatile = 10;
-    if ((map[index - 1] | map[index - 16] | map[index + 1] | map[index + 16]) &
-        AltarBit) {
-      metatile = 26;
-    }
-  } else if (map_content & Spawner1Bit) {
-    metatile = 6;
-  } else if (map_content & Spawner2Bit) {
-    metatile = 7;
-  } else if (map_content & Spawner3Bit) {
-    metatile = 8;
-  } else if (map_content & UsedSpawner1Bit) {
-    metatile = 22;
-  } else if (map_content & UsedSpawner2Bit) {
-    metatile = 23;
-  } else if (map_content & UsedSpawner3Bit) {
-    metatile = 24;
-  } else if (map_content & ButtonBit) {
-    metatile = 13;
-  } else if (index == goal.index) {
-    metatile = 12;
   }
 
   return metatile;
-}
-
-void Level::get_key(Coord &coord) {
-  for (u8 i = 0; i < num_keys; i++) {
-    if (keys[i].coord.index == coord.index) {
-      map[keys[i].coord.index] ^= KeyBit;
-      num_keys--;
-      keys[i] = keys[num_keys];
-      break;
-    }
-  }
 }
