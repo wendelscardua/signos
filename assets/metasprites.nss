@@ -58,8 +58,8 @@ VarBankActive_msprBuffer=0
 VarPalBank_mapBuffer=0
 VarPalBank_msprBuffer=0
 VarTileViewTagBuf=0
-VarBgPalCur=0
-VarPalActive=1
+VarBgPalCur=3
+VarPalActive=0
 VarTileActive=3
 VarBankActive=0
 VarPPUMask=0
@@ -164,7 +164,7 @@ MetaSprite8=OtherRobotDown
 MetaSprite9=OtherRobotUp
 MetaSprite10=Signal
 
-MetaSpriteBankName=session
+MetaSpriteBankName=/home/wendel/projects/signos/assets/metasprites
 MetaspritePlayBackCursor=0
 
 
@@ -210,7 +210,7 @@ NameTable=010200[2]010200[2]030400[2]030400[12]111210[2]111210[2]131410[2]131410
 NameCopy=00[3c0]
 
 
-NameUndo=010200[2]010200[2]030400[16]111210[2]111210[2]131410[16]20[8]232420[16]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[20]20[20]00[20]10[20]20[20]
+NameUndo=010200[2]010200[2]030400[2]030400[12]111210[2]111210[2]131410[2]131410[12]20[8]232420[2]232420[12]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[6]00[12]10[8]20[6]00[12]20[8]00[20]10[20]20[20]00[20]10[20]20[20]
 
 
 AttrTable=0103001100[3c]
@@ -219,7 +219,7 @@ AttrTable=0103001100[3c]
 AttrCopy=00[40]
 
 
-AttrUndo=010300[3e]
+AttrUndo=0103001100[3c]
 
 
 MetaSprites=4001[2]40[2]020148[2]11014048120148ff[f0]40012340[2]022348[2]11234048122348ff[f0]380300403804004840130040[2]140048[2]23004048240048ff[e8]38034048380440[3]134048401440[2]48234048[2]2440[2]ff[e8]380500403806004840150040[2]160048[2]25004048260048ff[e8]380700403808004840170040[2]180048[2]27004048280048ff[e8]380301403804014840130140[2]140148[2]23014048240148ff[e8]3803414838044140[2]1341484014414048234148[2]244140ff[e8]380501403806014840150140[2]160148[2]25014048260148ff[e8]380701403808014840170140[2]180148[2]27014048280148ff[e8]40090240[2]0a0248[2]190240481a0248ff[f5f0]
@@ -290,10 +290,10 @@ BrushMask_7b=00[2]01[3]00[c]01[5]00[a]01[7]00[9]01[7]00[9]01[7]00[a]01[5]00[c]01
 BrushMask_8b=00[2]01[4]00[b]01[6]00[9]01[8]00[8]01[8]00[8]01[8]00[8]01[8]00[9]01[6]00[b]01[4]00[8a]
 
 
-32_BankViewTable=00000000[100]00001000[100]00002000[100]00003000[100]
+32_BankViewTable=00000000[19]0000100000000000[e6]00001000[100]00002000[100]00003000[100]
 
 
-32_BankViewTableUndo=00000000[100]00001000[100]00002000[100]00003000[100]
+32_BankViewTableUndo=00000000[19]0000100000000000[e6]00001000[100]00002000[100]00003000[100]
 
 
 8_TileCollisionProperties=00[400]
@@ -368,14 +368,14 @@ MetatileSet_8x8_props=00[2000]
 MetatileSet_8x8_propsUndo=00[2000]
 
 
-MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-MetatileSetLabels_8x8=Unlabeled,Unlabeled
-MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
+MetatileSetLabels_8x8=Unlabeled,Unlabeled
+MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
 
 CHRBankLabels=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
@@ -471,10 +471,10 @@ Checkpoint_MetaSpritesUndo=ff[10000]
 Checkpoint_MetaSpritesUndo_show=0[4000]
 
 
-Checkpoint_32_BankViewTable=00000000[100]00001000[100]00002000[100]00003000[100]
+Checkpoint_32_BankViewTable=00000000[19]0000100000000000[e6]00001000[100]00002000[100]00003000[100]
 
 
-Checkpoint_32_BankViewTableUndo=00000000[100]00001000[100]00002000[100]00003000[100]
+Checkpoint_32_BankViewTableUndo=00000000[19]0000100000000000[e6]00001000[100]00002000[100]00003000[100]
 
 
 Checkpoint_8_TileCollisionProperties=00[400]
@@ -549,18 +549,18 @@ Checkpoint_MetatileSet_8x8_props=00[2000]
 Checkpoint_MetatileSet_8x8_propsUndo=00[2000]
 
 
-Checkpoint_MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-Checkpoint_MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-Checkpoint_MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-Checkpoint_MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-Checkpoint_MetatileSetLabels_8x8=Unlabeled,Unlabeled
-Checkpoint_MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_8x8=Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
 
-Checkpoint_CHRBankLabels=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_CHRBankLabels=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-Checkpoint_CHRBankLabelsUndo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_CHRBankLabelsUndo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
 
 Checkpoint_32_NTSC_MsprDuration=00000006[100]
@@ -653,14 +653,14 @@ Switch tile 4 ID=251
 
 Switch tile targets:
 ---------------------------------------------------------
-Switch tile 1 target=4096
-Switch tile 2 target=0
-Switch tile 3 target=12288
-Switch tile 4 target=8192
+Switch tile 1 target=0
+Switch tile 2 target=4096
+Switch tile 3 target=8192
+Switch tile 4 target=12288
 
 Switch tile checkboxes:
 ---------------------------------------------------------
 Switch tile 1 checkbox=1
 Switch tile 2 checkbox=1
-Switch tile 3 checkbox=0
-Switch tile 4 checkbox=0
+Switch tile 3 checkbox=1
+Switch tile 4 checkbox=1
