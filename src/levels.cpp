@@ -76,6 +76,10 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
     map[robots[i].coord.index] |=
         (u8)(MapContent::SolidBit | MapContent::RobotBit);
   }
+
+  for (u8 i = 0; i < MAX_CARDS; i++) {
+    script[i] = EmptyCard;
+  }
 }
 
 Robot &Level::add_robot(Coord &coord) {

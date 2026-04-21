@@ -23,10 +23,6 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
 
   scroll(0, 0);
 
-  for (u8 i = 0; i < 7; i++) {
-    level.script[i] = (Card)(7 - i);
-  }
-
   for (u8 index = 0; index < Level::ROWS * Level::COLUMNS; ++index) {
     Coord coord = (Coord)index;
     u8 metatile = level.effective_metatile(index);
