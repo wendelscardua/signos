@@ -3,6 +3,7 @@
 #include "card.hpp"
 #include "common.hpp"
 #include "robot.hpp"
+#include "signal.hpp"
 class Level {
 public:
   static constexpr u8 NUM_LEVELS = 2;
@@ -18,8 +19,10 @@ public:
 
   static u8 map[ROWS * COLUMNS];
   static u8 energy[ROWS * COLUMNS];
-  static Card script[MAX_CARDS];
+  static Card script[MAX_CARDS + 1]; // last card is a guard, empty card
   static u8 script_nesting;
+
+  Signal signal;
 
   Coord entrance, exit;
 

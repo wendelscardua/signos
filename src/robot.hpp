@@ -1,5 +1,6 @@
 #pragma once
 
+#include "card.hpp"
 #include "common.hpp"
 #include <fixed_point.h>
 
@@ -11,10 +12,12 @@ public:
     Idle,
     Moving,
     Preparing,
+    Signaling,
     Executing,
   };
 
   static constexpr fu8_8 SPEED = 1.25_u8_8;
+  static constexpr u8 EXECUTION_FRAMES = 16;
 
   State state;
   Coord coord;
@@ -22,9 +25,15 @@ public:
   fu8_8 x, y;
   fu8_8 target_x, target_y;
 
-  bool scripted;
+  Card *script_pointer;
   u8 script_index;
+  u8 execution_frame_counter;
 
   Robot();
   void update();
+  void move_up();
+  void move_down();
+  void move_left();
+  void move_right();
+  bool scripted();
 };

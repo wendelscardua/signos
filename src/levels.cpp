@@ -6,7 +6,7 @@ __attribute__((
 __attribute__((
     section(".prg_ram.noinit"))) u8 Level::energy[Level::ROWS * Level::COLUMNS];
 __attribute__((
-    section(".prg_ram.noinit"))) Card Level::script[Level::MAX_CARDS];
+    section(".prg_ram.noinit"))) Card Level::script[Level::MAX_CARDS + 1];
 __attribute__((section(".prg_ram.noinit"))) u8 Level::script_nesting;
 
 Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
@@ -78,10 +78,11 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
         (u8)(MapContent::SolidBit | MapContent::RobotBit);
   }
 
-  for (u8 i = 0; i < MAX_CARDS; i++) {
+  for (u8 i = 0; i <= MAX_CARDS; i++) {
     script[i] = EmptyCard;
   }
   script_nesting = 0;
+  signal.active = false;
 }
 
 Robot &Level::add_robot(Coord &coord) {

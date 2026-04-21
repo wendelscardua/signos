@@ -57,6 +57,7 @@ add_library(SourceObj
 
   attributes.cpp
   robot.cpp
+  signal.cpp
   levels.cpp
 
   banked-asset-helpers.s

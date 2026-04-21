@@ -2,9 +2,7 @@
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
 #include "ggsound.hpp"
-#ifndef NDEBUG
 #include "mesen-integration.hpp"
-#endif
 #include "metasprites.hpp"
 #include "metatiles.hpp"
 #include <nesdoug.h>
@@ -22,6 +20,8 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
   oam_clear();
 
   scroll(0, 0);
+
+  execution_stack_index = 0;
 
   for (u8 index = 0; index < Level::ROWS * Level::COLUMNS; ++index) {
     Coord coord = (Coord)index;
@@ -79,46 +79,18 @@ void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held) {
       player.script_index = 0;
     }
     if (held & PAD_UP) {
-      player.state = Robot::State::Moving;
-      player.direction = Direction::North;
-      player.target_x = player.x;
-      player.target_y = player.y - 16;
+      player.move_up();
     }
     if (held & PAD_DOWN) {
-      player.state = Robot::State::Moving;
-      player.direction = Direction::South;
-      player.target_x = player.x;
-      player.target_y = player.y + 16;
+      player.move_down();
     }
     if (held & PAD_LEFT) {
-      player.state = Robot::State::Moving;
-      player.direction = Direction::West;
-      player.target_x = player.x - 16;
-      player.target_y = player.y;
+      player.move_left();
     }
     if (held & PAD_RIGHT) {
-      player.state = Robot::State::Moving;
-      player.direction = Direction::East;
-      player.target_x = player.x + 16;
-      player.target_y = player.y;
+      player.move_right();
     }
-    if (player.state == Robot::State::Moving) {
-      if ((player.coord.index + (s8)player.direction < 0 ||
-           player.coord.index + (s8)player.direction >=
-               Level::ROWS * Level::COLUMNS ||
-           (level.map[player.coord.index + (s8)player.direction] &
-            MapContent::SolidBit) != 0)) {
-        player.state = Robot::State::Idle;
-        player.target_x = player.x;
-        player.target_y = player.y;
-      } else {
-        level.map[player.coord.index] &=
-            ~(u8)(MapContent::SolidBit | MapContent::RobotBit);
-        player.coord.index += (s8)player.direction;
-        level.map[player.coord.index] |=
-            (u8)(MapContent::SolidBit | MapContent::RobotBit);
-      }
-    }
+    clamp_robot_movement(player);
 
     break;
   case Robot::State::Moving:
@@ -162,25 +134,25 @@ void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held) {
         player.script_index++;
         level.script_nesting--;
       } else {
-        player.state = Robot::State::Executing;
+        level.signal.script_index = 0;
+        send_signal(player);
       }
     }
+    break;
+  case Robot::State::Signaling:
     break;
   case Robot::State::Executing:
     break;
   }
 }
 void LevelScreen::update_robots() {
-  START_MESEN_WATCH("robots");
   for (u8 i = 0; i < level.num_robots; ++i) {
-    level.robots[i].update();
+    update_robot(level.robots[i]);
   }
-  STOP_MESEN_WATCH("robots");
 }
+
 void LevelScreen::update_paths() {
-  START_MESEN_WATCH("paths");
   for (u8 i = 0; i < level.num_paths; ++i) {
-    START_MESEN_WATCH("path");
     auto &path = level.paths[i];
     // first coord on the path is the button - batteries are along the way
     auto button_coord = path[0];
@@ -213,16 +185,13 @@ void LevelScreen::update_paths() {
         }
       }
     }
-    STOP_MESEN_WATCH("path");
   }
-  STOP_MESEN_WATCH("paths");
 }
 __attribute__((noinline)) void LevelScreen::loop() {
   Robot &player = level.robots[0];
   while (current_game_state == GameState::LevelScreen) {
     ppu_wait_nmi();
 
-    START_MESEN_WATCH("level");
     pad_poll(0);
     u8 held = pad_state(0);
     u8 pressed = get_pad_new(0);
@@ -237,15 +206,16 @@ __attribute__((noinline)) void LevelScreen::loop() {
       handle_input(player, pressed, held);
       update_robots();
       update_paths();
+      update_signal();
     }
     update_metatiles();
     render_sprites();
-    STOP_MESEN_WATCH("level");
   }
 }
 
 __attribute__((noinline)) void LevelScreen::render_sprites() {
   Robot &player = level.robots[0];
+  u8 executing_index = 0xff;
   {
     u8 *metasprite;
     switch (player.direction) {
@@ -266,6 +236,9 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       break;
     }
     banked_oam_meta_spr(player.x.as_i(), player.y.as_i(), metasprite);
+    if (player.state == Robot::State::Executing) {
+      executing_index = 0;
+    }
   }
   for (u8 index = 1; index < level.num_robots; ++index) {
     Robot &robot = level.robots[index];
@@ -288,6 +261,9 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       break;
     }
     banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
+    if (robot.state == Robot::State::Executing) {
+      executing_index = index;
+    }
   }
   if (player.state == Robot::State::Preparing) {
     if (player.script_index == Level::MAX_CARDS) {
@@ -302,6 +278,25 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       u8 y = card_position.row * 16;
       banked_oam_meta_spr(x, y, (u8 *)metasprite_WritingCursor);
     }
+  } else if (executing_index != 0xff) {
+    Robot &robot = level.robots[executing_index];
+    if (robot.script_index == Level::MAX_CARDS) {
+      Coord card_position =
+          (Coord)(CARD_START_INDEX + (Level::MAX_CARDS - 1) * 2);
+      u8 x = card_position.column * 16;
+      u8 y = card_position.row * 16;
+      banked_oam_meta_spr(x, y, (u8 *)metasprite_ProcessingCursor);
+    } else {
+      Coord card_position = (Coord)(CARD_START_INDEX + robot.script_index * 2);
+      u8 x = card_position.column * 16;
+      u8 y = card_position.row * 16;
+      banked_oam_meta_spr(x, y, (u8 *)metasprite_ProcessingCursor);
+    }
+  }
+  if (level.signal.active) {
+    u8 x = level.signal.x.as_i();
+    u8 y = level.signal.y.as_i();
+    banked_oam_meta_spr(x, y, (u8 *)metasprite_Signal);
   }
   oam_hide_rest();
 }
@@ -352,4 +347,221 @@ void LevelScreen::draw_card(u8 card_index) {
   metatile_updates.enqueue(index + 1);
   metatile_updates.enqueue(index + 16);
   metatile_updates.enqueue(index + 17);
+}
+
+void LevelScreen::update_signal() {
+  if (level.signal.active) {
+    level.signal.update();
+    if (!level.signal.active) {
+      // signal has reached its target
+      // if the target is a robot, it loads the script and executes it
+      if (level.signal.target_robot_index != 0xff) {
+        Robot &target = level.robots[level.signal.target_robot_index];
+        target.script_pointer = level.script + level.signal.script_index;
+        target.script_index = level.signal.script_index;
+        target.state = Robot::State::Executing;
+        target.execution_frame_counter = 0;
+        execution_stack[execution_stack_index++] =
+            level.signal.source_robot_index;
+      } else {
+        // otherwise, it fizzles and the source robot returns to idle
+        Robot &source = level.robots[level.signal.source_robot_index];
+        source.state = Robot::State::Idle;
+        finish_robot_movement(source); // fizzling a running program resumes it
+        if (level.signal.source_robot_index == 0 && !source.scripted()) {
+          // if fizzling back to player invocation, reset script cards
+          for (u8 i = 0; i < Level::MAX_CARDS; ++i) {
+            level.script[i] = Card::EmptyCard;
+            draw_card(i);
+          }
+        }
+      }
+    }
+  }
+}
+
+void LevelScreen::update_robot(Robot &robot) {
+  switch (robot.state) {
+  case Robot::State::Idle:
+    break;
+  case Robot::State::Moving:
+    if (robot.x < robot.target_x) {
+      robot.x += Robot::SPEED;
+      if (robot.x >= robot.target_x) {
+        robot.x = robot.target_x;
+        robot.state = Robot::State::Idle;
+      }
+    } else if (robot.x > robot.target_x) {
+      robot.x -= Robot::SPEED;
+      if (robot.x <= robot.target_x) {
+        robot.x = robot.target_x;
+        robot.state = Robot::State::Idle;
+      }
+    } else if (robot.y < robot.target_y) {
+      robot.y += Robot::SPEED;
+      if (robot.y >= robot.target_y) {
+        robot.y = robot.target_y;
+        robot.state = Robot::State::Idle;
+      }
+    } else if (robot.y > robot.target_y) {
+      robot.y -= Robot::SPEED;
+      if (robot.y <= robot.target_y) {
+        robot.y = robot.target_y;
+        robot.state = Robot::State::Idle;
+      }
+    }
+    finish_robot_movement(robot);
+    break;
+  case Robot::State::Preparing:
+    break;
+  case Robot::State::Signaling:
+    break;
+  case Robot::State::Executing:
+    robot.execution_frame_counter++;
+    if (robot.execution_frame_counter >= Robot::EXECUTION_FRAMES) {
+      robot.execution_frame_counter = 0;
+      if (robot.scripted()) {
+        Card card = *robot.script_pointer;
+        switch (card) {
+        case Card::UpCard:
+          robot.move_up();
+          clamp_robot_movement(robot);
+          break;
+        case Card::DownCard:
+          robot.move_down();
+          clamp_robot_movement(robot);
+          break;
+        case Card::LeftCard:
+          robot.move_left();
+          clamp_robot_movement(robot);
+          break;
+        case Card::RightCard:
+          robot.move_right();
+          clamp_robot_movement(robot);
+          break;
+        case Card::PrepareCard:
+          level.script[robot.script_index] = Card::EmptyCard;
+          draw_card(robot.script_index);
+          level.signal.source_robot_index = (u8)(&robot - level.robots);
+          level.signal.script_index = ++robot.script_index;
+          robot.script_pointer++;
+          {
+            u8 recursion_stack_size = 0;
+            while (robot.script_index < Level::MAX_CARDS &&
+                   (level.script[robot.script_index] != Card::SignalCard ||
+                    recursion_stack_size > 0)) {
+              if (level.script[robot.script_index] == Card::PrepareCard) {
+                recursion_stack_size++;
+              } else if (recursion_stack_size > 0 &&
+                         level.script[robot.script_index] == Card::SignalCard) {
+                recursion_stack_size--;
+              }
+              robot.script_pointer++;
+              robot.script_index++;
+            }
+          }
+          break;
+        case Card::SignalCard:
+          send_signal(robot);
+          level.script[robot.script_index] = Card::EmptyCard;
+          draw_card(robot.script_index);
+          robot.script_pointer++;
+          robot.script_index++;
+          break;
+        case Card::EmptyCard:
+          finish_robot_program(robot);
+          break;
+        }
+      }
+    }
+    break;
+  }
+}
+
+void LevelScreen::finish_robot_movement(Robot &robot) {
+  if (robot.state == Robot::State::Idle && robot.scripted()) {
+    robot.state = Robot::State::Executing;
+    robot.execution_frame_counter = 0;
+    level.script[robot.script_index] = Card::EmptyCard;
+    draw_card(robot.script_index);
+    robot.script_pointer++;
+    robot.script_index++;
+  }
+}
+
+void LevelScreen::clamp_robot_movement(Robot &robot) {
+  if (robot.state == Robot::State::Moving) {
+    if ((robot.coord.index + (s8)robot.direction < 0 ||
+         robot.coord.index + (s8)robot.direction >=
+             Level::ROWS * Level::COLUMNS ||
+         (level.map[robot.coord.index + (s8)robot.direction] &
+          MapContent::SolidBit) != 0)) {
+      robot.state = Robot::State::Idle;
+      robot.target_x = robot.x;
+      robot.target_y = robot.y;
+      finish_robot_movement(robot);
+    } else {
+      level.map[robot.coord.index] &=
+          ~(u8)(MapContent::SolidBit | MapContent::RobotBit);
+      robot.coord.index += (s8)robot.direction;
+      level.map[robot.coord.index] |=
+          (u8)(MapContent::SolidBit | MapContent::RobotBit);
+    }
+  }
+}
+
+void LevelScreen::send_signal(Robot &robot) {
+  robot.state = Robot::State::Signaling;
+  // initialize signal at robot's position
+  level.signal.active = true;
+  level.signal.source_robot_index = (u8)(&robot - level.robots);
+  level.signal.target_robot_index = 0xff;
+  level.signal.direction = robot.direction;
+  level.signal.x = robot.x;
+  level.signal.y = robot.y;
+
+  // find first robot in the direction of the signal, or obstacle
+  Coord target_coord = (Coord)((u8)(robot.coord.index + (s8)robot.direction));
+
+  // keep walking while the next coord is inbounds and not a solid (or is
+  // solid but it's a glass pane)
+  while (target_coord.index >= 0 &&
+         target_coord.index < Level::ROWS * Level::COLUMNS &&
+         ((level.map[target_coord.index] & MapContent::SolidBit) == 0 ||
+          level.effective_metatile((u8)(target_coord.index)) == 0x03)) {
+    target_coord.index += (s8)robot.direction;
+  }
+  level.signal.target_x = 16.0_u8_8 * target_coord.column;
+  level.signal.target_y = 16.0_u8_8 * target_coord.row;
+  // if the target coord has a robot, set the target index
+  puts("target_coord.index: ");
+  put_hex(target_coord.index);
+  putchar('\n');
+  if (level.map[target_coord.index] & MapContent::RobotBit) {
+    for (u8 i = 0; i < level.num_robots; ++i) {
+      puts("robot index: ");
+      put_hex(i);
+      putchar('\n');
+      puts("robot coord index: ");
+      put_hex(level.robots[i].coord.index);
+      putchar('\n');
+      if (level.robots[i].coord.index == target_coord.index) {
+        level.signal.target_robot_index = i;
+        break;
+      }
+    }
+  }
+}
+
+void LevelScreen::finish_robot_program(Robot &robot) {
+  robot.state = Robot::State::Idle;
+  robot.script_pointer = nullptr;
+  robot.script_index = 0;
+  u8 other_index = execution_stack[--execution_stack_index];
+  auto &other = level.robots[other_index];
+  if (other.scripted()) {
+    other.state = Robot::State::Executing;
+  } else {
+    other.state = Robot::State::Idle;
+  }
 }
