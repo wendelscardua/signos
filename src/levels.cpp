@@ -1,11 +1,12 @@
 #include "levels.hpp"
 #include "common.hpp"
-#include "mesen-integration.hpp"
 
 __attribute__((
     section(".prg_ram.noinit"))) u8 Level::map[Level::ROWS * Level::COLUMNS];
 __attribute__((
     section(".prg_ram.noinit"))) u8 Level::energy[Level::ROWS * Level::COLUMNS];
+__attribute__((
+    section(".prg_ram.noinit"))) Card Level::script[Level::MAX_CARDS];
 
 Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
   const void *cursor = level_data;
@@ -90,6 +91,15 @@ Robot &Level::add_robot(Coord &coord) {
 }
 
 u8 Level::effective_metatile(u8 index) {
+  if (index > ROWS * COLUMNS) {
+    // render cards
+    Coord coord = (Coord)index;
+    u8 card_index = coord.column / 2;
+    Card card = script[card_index];
+    u8 metatile =
+        (u8)(card) * 2 + 0xe0 + coord.column % 2 + 0x10 * (coord.row % 2);
+    return metatile;
+  }
   auto metatile = metatiles[index];
   auto energy_content = energy[index];
   auto map_content = map[index];

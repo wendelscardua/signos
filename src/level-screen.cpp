@@ -23,7 +23,33 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
 
   scroll(0, 0);
 
+  for (u8 i = 0; i < 7; i++) {
+    level.script[i] = (Card)(7 - i);
+  }
+
   for (u8 index = 0; index < Level::ROWS * Level::COLUMNS; ++index) {
+    Coord coord = (Coord)index;
+    u8 metatile = level.effective_metatile(index);
+    vram_adr((unsigned int)NTADR_A(coord.column * 2, coord.row * 2));
+    vram_put(metatiles_ul[metatile]);
+    vram_put(metatiles_ur[metatile]);
+    vram_adr((unsigned int)NTADR_A(coord.column * 2, coord.row * 2 + 1));
+    vram_put(metatiles_dl[metatile]);
+    vram_put(metatiles_dr[metatile]);
+    Attributes::set(coord.column, coord.row, metatiles_attr[metatile]);
+  }
+  for (u8 index = 0xc1; index < 0xce; index++) {
+    Coord coord = (Coord)index;
+    u8 metatile = level.effective_metatile(index);
+    vram_adr((unsigned int)NTADR_A(coord.column * 2, coord.row * 2));
+    vram_put(metatiles_ul[metatile]);
+    vram_put(metatiles_ur[metatile]);
+    vram_adr((unsigned int)NTADR_A(coord.column * 2, coord.row * 2 + 1));
+    vram_put(metatiles_dl[metatile]);
+    vram_put(metatiles_dr[metatile]);
+    Attributes::set(coord.column, coord.row, metatiles_attr[metatile]);
+  }
+  for (u8 index = 0xd1; index < 0xde; index++) {
     Coord coord = (Coord)index;
     u8 metatile = level.effective_metatile(index);
     vram_adr((unsigned int)NTADR_A(coord.column * 2, coord.row * 2));

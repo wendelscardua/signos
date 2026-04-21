@@ -22,7 +22,8 @@ public:
   fu8_8 x, y;
   fu8_8 target_x, target_y;
 
-  void *script_pointer;
+  bool scripted;
+  u8 script_index;
 
   Robot();
   void update();

@@ -2,7 +2,8 @@
 
 Robot::Robot()
     : coord(0), direction(Direction::East), x(0.0_u8_8), y(0.0_u8_8),
-      target_x(0.0_u8_8), target_y(0.0_u8_8), script_pointer(nullptr) {}
+      target_x(0.0_u8_8), target_y(0.0_u8_8), scripted(false), script_index(0) {
+}
 
 void Robot::update() {
   switch (state) {

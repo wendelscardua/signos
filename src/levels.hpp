@@ -1,8 +1,8 @@
 #pragma once
 
+#include "card.hpp"
 #include "common.hpp"
 #include "robot.hpp"
-
 class Level {
 public:
   static constexpr u8 NUM_LEVELS = 2;
@@ -11,12 +11,14 @@ public:
   static constexpr u8 MAX_BUTTONS = 8;
   static constexpr u8 MAX_PATHS = 8;
   static constexpr u8 MAX_BATTERIES = 8;
+  static constexpr u8 MAX_CARDS = 7;
 
   static constexpr u8 ROWS = 10;
   static constexpr u8 COLUMNS = 16;
 
   static u8 map[ROWS * COLUMNS];
   static u8 energy[ROWS * COLUMNS];
+  static Card script[MAX_CARDS];
 
   Coord entrance, exit;
 
