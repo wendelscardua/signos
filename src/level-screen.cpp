@@ -368,14 +368,11 @@ void LevelScreen::update_signal() {
         // otherwise, it fizzles and the source robot returns to idle
         Robot &source = level.robots[level.signal.source_robot_index];
         source.state = Robot::State::Idle;
-        finish_robot_movement(source); // fizzling a running program resumes it
-        if (level.signal.source_robot_index == 0 && !source.scripted()) {
-          // if fizzling back to player invocation, reset script cards
-          for (u8 i = 0; i < Level::MAX_CARDS; ++i) {
-            level.script[i] = Card::EmptyCard;
-            draw_card(i);
-          }
+        for (u8 i = level.signal.script_index; i < source.script_index; ++i) {
+          level.script[i] = Card::EmptyCard;
+          draw_card(i);
         }
+        finish_robot_movement(source); // fizzling a running program resumes it
       }
     }
   }
@@ -486,10 +483,6 @@ void LevelScreen::update_robot(Robot &robot) {
           break;
         case Card::SignalCard:
           send_signal(robot);
-          level.script[robot.script_index] = Card::EmptyCard;
-          draw_card(robot.script_index);
-          robot.script_pointer++;
-          robot.script_index++;
           break;
         case Card::EmptyCard:
           finish_robot_program(robot);
