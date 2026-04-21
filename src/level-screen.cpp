@@ -424,20 +424,40 @@ void LevelScreen::update_robot(Robot &robot) {
         Card card = *robot.script_pointer;
         switch (card) {
         case Card::UpCard:
-          robot.move_up();
-          clamp_robot_movement(robot);
+          if (robot.direction != Direction::North) {
+            robot.direction = Direction::North;
+            finish_robot_movement(robot);
+          } else {
+            robot.move_up();
+            clamp_robot_movement(robot);
+          }
           break;
         case Card::DownCard:
-          robot.move_down();
-          clamp_robot_movement(robot);
+          if (robot.direction != Direction::South) {
+            robot.direction = Direction::South;
+            finish_robot_movement(robot);
+          } else {
+            robot.move_down();
+            clamp_robot_movement(robot);
+          }
           break;
         case Card::LeftCard:
-          robot.move_left();
-          clamp_robot_movement(robot);
+          if (robot.direction != Direction::West) {
+            robot.direction = Direction::West;
+            finish_robot_movement(robot);
+          } else {
+            robot.move_left();
+            clamp_robot_movement(robot);
+          }
           break;
         case Card::RightCard:
-          robot.move_right();
-          clamp_robot_movement(robot);
+          if (robot.direction != Direction::East) {
+            robot.direction = Direction::East;
+            finish_robot_movement(robot);
+          } else {
+            robot.move_right();
+            clamp_robot_movement(robot);
+          }
           break;
         case Card::PrepareCard:
           level.script[robot.script_index] = Card::EmptyCard;
@@ -479,7 +499,9 @@ void LevelScreen::update_robot(Robot &robot) {
 }
 
 void LevelScreen::finish_robot_movement(Robot &robot) {
-  if (robot.state == Robot::State::Idle && robot.scripted()) {
+  if ((robot.state == Robot::State::Idle ||
+       robot.state == Robot::State::Executing) &&
+      robot.scripted()) {
     robot.state = Robot::State::Executing;
     robot.execution_frame_counter = 0;
     level.script[robot.script_index] = Card::EmptyCard;
