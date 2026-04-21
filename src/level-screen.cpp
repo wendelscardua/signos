@@ -393,10 +393,11 @@ void LevelScreen::update_robot(Robot &robot) {
         robot.state = Robot::State::Idle;
       }
     } else if (robot.x > robot.target_x) {
-      robot.x -= Robot::SPEED;
-      if (robot.x <= robot.target_x) {
+      if (robot.x <= robot.target_x + Robot::SPEED) {
         robot.x = robot.target_x;
         robot.state = Robot::State::Idle;
+      } else {
+        robot.x -= Robot::SPEED;
       }
     } else if (robot.y < robot.target_y) {
       robot.y += Robot::SPEED;
@@ -405,10 +406,11 @@ void LevelScreen::update_robot(Robot &robot) {
         robot.state = Robot::State::Idle;
       }
     } else if (robot.y > robot.target_y) {
-      robot.y -= Robot::SPEED;
-      if (robot.y <= robot.target_y) {
+      if (robot.y <= robot.target_y + Robot::SPEED) {
         robot.y = robot.target_y;
         robot.state = Robot::State::Idle;
+      } else {
+        robot.y -= Robot::SPEED;
       }
     }
     finish_robot_movement(robot);

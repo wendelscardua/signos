@@ -18,10 +18,11 @@ void Signal::update() {
       active = false;
     }
   } else if (x > target_x) {
-    x -= SPEED;
-    if (x <= target_x) {
+    if (x <= target_x + SPEED) {
       x = target_x;
       active = false;
+    } else {
+      x -= SPEED;
     }
   }
 
@@ -32,10 +33,11 @@ void Signal::update() {
       active = false;
     }
   } else if (y > target_y) {
-    y -= SPEED;
-    if (y <= target_y) {
+    if (y <= target_y + SPEED) {
       y = target_y;
       active = false;
+    } else {
+      y -= SPEED;
     }
   }
 }
