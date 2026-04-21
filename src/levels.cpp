@@ -41,7 +41,7 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
   cursor = (u8 *)(cursor) + 1;
   for (u8 i = 0; i < num_paths; i++) {
     paths[i] = *(Coord **)cursor;
-    cursor = (Coord *)(cursor) + 1;
+    cursor = (Coord **)cursor + 1;
   }
 
   for (u8 index = 0; index < ROWS * COLUMNS; index++) {
