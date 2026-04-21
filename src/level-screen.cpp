@@ -245,10 +245,10 @@ __attribute__((noinline)) void LevelScreen::loop() {
 }
 
 __attribute__((noinline)) void LevelScreen::render_sprites() {
+  Robot &player = level.robots[0];
   {
-    Robot &robot = level.robots[0];
     u8 *metasprite;
-    switch (robot.direction) {
+    switch (player.direction) {
     case Direction::East:
       metasprite = (u8 *)metasprite_RobotRight;
       break;
@@ -265,7 +265,7 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       metasprite = (u8 *)metasprite_RobotRight;
       break;
     }
-    banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
+    banked_oam_meta_spr(player.x.as_i(), player.y.as_i(), metasprite);
   }
   for (u8 index = 1; index < level.num_robots; ++index) {
     Robot &robot = level.robots[index];
@@ -288,6 +288,20 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       break;
     }
     banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
+  }
+  if (player.state == Robot::State::Preparing) {
+    if (player.script_index == Level::MAX_CARDS) {
+      Coord card_position =
+          (Coord)(CARD_START_INDEX + (Level::MAX_CARDS - 1) * 2);
+      u8 x = card_position.column * 16;
+      u8 y = card_position.row * 16;
+      banked_oam_meta_spr(x, y, (u8 *)metasprite_WarningCursor);
+    } else {
+      Coord card_position = (Coord)(CARD_START_INDEX + player.script_index * 2);
+      u8 x = card_position.column * 16;
+      u8 y = card_position.row * 16;
+      banked_oam_meta_spr(x, y, (u8 *)metasprite_WritingCursor);
+    }
   }
   oam_hide_rest();
 }
