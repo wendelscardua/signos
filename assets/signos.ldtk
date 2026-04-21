@@ -1435,9 +1435,9 @@
 			"tileRect": { "tilesetUid": 2, "x": 96, "y": 0, "w": 16, "h": 32 },
 			"uiTileRect": null,
 			"nineSliceBorders": [],
-			"maxCount": 1,
+			"maxCount": 7,
 			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
+			"limitBehavior": "PreventAdding",
 			"pivotX": 0.625,
 			"pivotY": 0.417,
 			"fieldDefs": []
@@ -1965,7 +1965,7 @@
 						},
 						{
 							"__identifier": "Robot",
-							"__grid": [8,8],
+							"__grid": [11,4],
 							"__pivot": [0.625,0.417],
 							"__tags": [],
 							"__tile": { "tilesetUid": 2, "x": 96, "y": 0, "w": 16, "h": 32 },
@@ -1974,10 +1974,26 @@
 							"width": 16,
 							"height": 24,
 							"defUid": 35,
-							"px": [137,136],
+							"px": [186,71],
 							"fieldInstances": [],
-							"__worldX": 393,
-							"__worldY": 136
+							"__worldX": 442,
+							"__worldY": 71
+						},
+						{
+							"__identifier": "Robot",
+							"__grid": [7,8],
+							"__pivot": [0.625,0.417],
+							"__tags": [],
+							"__tile": { "tilesetUid": 2, "x": 96, "y": 0, "w": 16, "h": 32 },
+							"__smartColor": "#BE4A2F",
+							"iid": "51dabfc0-21a0-11f1-b387-573d13877c90",
+							"width": 16,
+							"height": 24,
+							"defUid": 35,
+							"px": [122,135],
+							"fieldInstances": [],
+							"__worldX": 378,
+							"__worldY": 135
 						}
 					]
 				},
