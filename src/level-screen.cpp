@@ -556,18 +556,10 @@ void LevelScreen::send_signal(Robot &robot) {
   }
   level.signal.target_x = 16.0_u8_8 * target_coord.column;
   level.signal.target_y = 16.0_u8_8 * target_coord.row;
+
   // if the target coord has a robot, set the target index
-  puts("target_coord.index: ");
-  put_hex(target_coord.index);
-  putchar('\n');
   if (level.map[target_coord.index] & MapContent::RobotBit) {
     for (u8 i = 0; i < level.num_robots; ++i) {
-      puts("robot index: ");
-      put_hex(i);
-      putchar('\n');
-      puts("robot coord index: ");
-      put_hex(level.robots[i].coord.index);
-      putchar('\n');
       if (level.robots[i].coord.index == target_coord.index) {
         level.signal.target_robot_index = i;
         break;
