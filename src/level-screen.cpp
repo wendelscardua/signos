@@ -22,6 +22,7 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
   scroll(0, 0);
 
   execution_stack_index = 0;
+  execution_index = 0xff;
 
   for (u8 index = 0; index < Level::ROWS * Level::COLUMNS; ++index) {
     Coord coord = (Coord)index;
@@ -215,7 +216,6 @@ __attribute__((noinline)) void LevelScreen::loop() {
 
 __attribute__((noinline)) void LevelScreen::render_sprites() {
   Robot &player = level.robots[0];
-  u8 executing_index = 0xff;
   {
     u8 *metasprite;
     switch (player.direction) {
@@ -237,7 +237,7 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
     }
     banked_oam_meta_spr(player.x.as_i(), player.y.as_i(), metasprite);
     if (player.state == Robot::State::Executing) {
-      executing_index = 0;
+      execution_index = player.script_index;
     }
   }
   for (u8 index = 1; index < level.num_robots; ++index) {
@@ -262,7 +262,7 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
     }
     banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
     if (robot.state == Robot::State::Executing) {
-      executing_index = index;
+      execution_index = robot.script_index;
     }
   }
   if (player.state == Robot::State::Preparing) {
@@ -278,16 +278,15 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       u8 y = card_position.row * 16;
       banked_oam_meta_spr(x, y, (u8 *)metasprite_WritingCursor);
     }
-  } else if (executing_index != 0xff) {
-    Robot &robot = level.robots[executing_index];
-    if (robot.script_index == Level::MAX_CARDS) {
+  } else if (execution_index != 0xff) {
+    if (execution_index == Level::MAX_CARDS) {
       Coord card_position =
           (Coord)(CARD_START_INDEX + (Level::MAX_CARDS - 1) * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
       banked_oam_meta_spr(x, y, (u8 *)metasprite_ProcessingCursor);
     } else {
-      Coord card_position = (Coord)(CARD_START_INDEX + robot.script_index * 2);
+      Coord card_position = (Coord)(CARD_START_INDEX + execution_index * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
       banked_oam_meta_spr(x, y, (u8 *)metasprite_ProcessingCursor);
@@ -324,6 +323,7 @@ void LevelScreen::open_doors(u8 index) {
     u8 neighbor_index = (u8)(index + delta);
     if (level.map[neighbor_index] & MapContent::DoorBit) {
       level.energy[neighbor_index] = 3;
+      level.map[neighbor_index] &= ~MapContent::SolidBit;
       metatile_updates.enqueue(neighbor_index);
     }
   }
@@ -335,6 +335,7 @@ void LevelScreen::close_doors(u8 index) {
     u8 neighbor_index = (u8)(index + delta);
     if (level.map[neighbor_index] & MapContent::DoorBit) {
       level.energy[neighbor_index] = 0;
+      level.map[neighbor_index] |= MapContent::SolidBit;
       metatile_updates.enqueue(neighbor_index);
     }
   }
@@ -585,5 +586,6 @@ void LevelScreen::finish_robot_program(Robot &robot) {
     other.state = Robot::State::Executing;
   } else {
     other.state = Robot::State::Idle;
+    execution_index = 0xff;
   }
 }

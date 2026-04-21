@@ -10,6 +10,7 @@ public:
   static constexpr u8 MAX_EXECUTION_STACK_SIZE = 4;
   u8 execution_stack[MAX_EXECUTION_STACK_SIZE];
   u8 execution_stack_index;
+  u8 execution_index;
 
   Level level;
   Queue<u8, 32> metatile_updates;

@@ -17,7 +17,7 @@ public:
   };
 
   static constexpr fu8_8 SPEED = 1.25_u8_8;
-  static constexpr u8 EXECUTION_FRAMES = 16;
+  static constexpr u8 EXECUTION_FRAMES = 32;
 
   State state;
   Coord coord;
