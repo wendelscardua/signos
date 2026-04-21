@@ -57,8 +57,7 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
       map[index] |= (u8)MapContent::SolidBit;
     }
 
-    if (metatile == 0x14 || metatile == 0x15 || metatile == 0x16 ||
-        metatile == 0x17) { // batteries
+    if (metatile >= 0x14 && metatile <= 0x17) { // batteries
       map[index] |= (u8)(MapContent::SolidBit | MapContent::BatteryBit);
       energy[index] = metatile - 0x14;
     }
@@ -67,9 +66,12 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
       map[index] |= (u8)MapContent::SolidBit;
     }
 
-    if (metatile == 0x10 || metatile == 0x11 || metatile == 0x12 ||
-        metatile == 0x13) { // button
+    if (metatile >= 0x10 && metatile <= 0x13) { // buttons
       map[index] |= (u8)MapContent::ButtonBit;
+    }
+
+    if (metatile >= 0x35 && metatile <= 0x3f) { // cabled walls
+      map[index] |= (u8)MapContent::SolidBit;
     }
   }
 
@@ -112,8 +114,10 @@ u8 Level::effective_metatile(u8 index) {
   auto map_content = map[index];
 
   if (energy_content > 0) {
-    if (metatile >= 0x05 && metatile <= 0x13) { // cables and buttons
-      metatile += 0x20; // lit up metatiles are 0x20 below the unlit ones
+    if ((metatile >= 0x05 && metatile <= 0x13) ||
+        (metatile >= 0x35 &&
+         metatile <= 0x3f)) { // cables, buttons, cabled walls
+      metatile += 0x20;       // lit up metatiles are 0x20 below the unlit ones
     } else if (metatile >= 0x14 && metatile <= 0x17) { // batteries
       metatile =
           0x14 + energy_content; // battery metatiles are sorted by energy value
