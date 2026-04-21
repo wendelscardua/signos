@@ -2,9 +2,9 @@
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
 #include "ggsound.hpp"
-#include "mesen-integration.hpp"
 #include "metasprites.hpp"
 #include "metatiles.hpp"
+#include "robot.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
 
@@ -354,6 +354,7 @@ void LevelScreen::update_signal() {
   if (level.signal.active) {
     level.signal.update();
     if (!level.signal.active) {
+      Robot &source = level.robots[level.signal.source_robot_index];
       // signal has reached its target
       // if the target is a robot, it loads the script and executes it
       if (level.signal.target_robot_index != 0xff) {
@@ -366,14 +367,13 @@ void LevelScreen::update_signal() {
             level.signal.source_robot_index;
       } else {
         // otherwise, it fizzles and the source robot returns to idle
-        Robot &source = level.robots[level.signal.source_robot_index];
         source.state = Robot::State::Idle;
         for (u8 i = level.signal.script_index; i < source.script_index; ++i) {
           level.script[i] = Card::EmptyCard;
           draw_card(i);
         }
-        finish_robot_movement(source); // fizzling a running program resumes it
       }
+      finish_robot_movement(source); // fizzling a running program resumes it
     }
   }
 }
@@ -495,16 +495,22 @@ void LevelScreen::update_robot(Robot &robot) {
 }
 
 void LevelScreen::finish_robot_movement(Robot &robot) {
-  if ((robot.state == Robot::State::Idle ||
-       robot.state == Robot::State::Executing) &&
-      robot.scripted()) {
-    robot.state = Robot::State::Executing;
-    robot.execution_frame_counter = 0;
-    level.script[robot.script_index] = Card::EmptyCard;
-    draw_card(robot.script_index);
-    robot.script_pointer++;
-    robot.script_index++;
+  if (!robot.scripted()) {
+    return;
   }
+  if (robot.state != Robot::Idle && robot.state != Robot::State::Executing &&
+      robot.state != Robot::State::Signaling) {
+    return;
+  }
+  if ((robot.state == Robot::State::Idle ||
+       robot.state == Robot::State::Executing)) {
+    robot.state = Robot::State::Executing;
+  }
+  robot.execution_frame_counter = 0;
+  level.script[robot.script_index] = Card::EmptyCard;
+  draw_card(robot.script_index);
+  robot.script_pointer++;
+  robot.script_index++;
 }
 
 void LevelScreen::clamp_robot_movement(Robot &robot) {
