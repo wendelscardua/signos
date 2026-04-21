@@ -47,10 +47,103 @@ __attribute__((noinline)) LevelScreen::~LevelScreen() {
   ppu_off();
 }
 
+void LevelScreen::handle_input(Robot &player, u8 &held) {
+  switch (player.state) {
+  case Robot::State::Idle:
+    if (held & PAD_UP) {
+      player.state = Robot::State::Moving;
+      player.direction = Direction::North;
+      player.target_x = player.x;
+      player.target_y = player.y - 16;
+    }
+    if (held & PAD_DOWN) {
+      player.state = Robot::State::Moving;
+      player.direction = Direction::South;
+      player.target_x = player.x;
+      player.target_y = player.y + 16;
+    }
+    if (held & PAD_LEFT) {
+      player.state = Robot::State::Moving;
+      player.direction = Direction::West;
+      player.target_x = player.x - 16;
+      player.target_y = player.y;
+    }
+    if (held & PAD_RIGHT) {
+      player.state = Robot::State::Moving;
+      player.direction = Direction::East;
+      player.target_x = player.x + 16;
+      player.target_y = player.y;
+    }
+    if (player.state == Robot::State::Moving) {
+      if ((player.coord.index + (s8)player.direction < 0 ||
+           player.coord.index + (s8)player.direction >=
+               Level::ROWS * Level::COLUMNS ||
+           (level.map[player.coord.index + (s8)player.direction] &
+            MapContent::SolidBit) != 0)) {
+        player.state = Robot::State::Idle;
+        player.target_x = player.x;
+        player.target_y = player.y;
+      } else {
+        level.map[player.coord.index] &=
+            ~(u8)(MapContent::SolidBit | MapContent::RobotBit);
+        player.coord.index += (s8)player.direction;
+        level.map[player.coord.index] |=
+            (u8)(MapContent::SolidBit | MapContent::RobotBit);
+      }
+    }
+    break;
+  case Robot::State::Moving:
+    break;
+  case Robot::State::Preparing:
+    break;
+  case Robot::State::Executing:
+    break;
+  }
+}
+void LevelScreen::update_robots() {
+  START_MESEN_WATCH("robots");
+  for (u8 i = 0; i < level.num_robots; ++i) {
+    level.robots[i].update();
+  }
+  STOP_MESEN_WATCH("robots");
+}
+void LevelScreen::update_paths() {
+  START_MESEN_WATCH("paths");
+  for (u8 i = 0; i < level.num_paths; ++i) {
+    START_MESEN_WATCH("path");
+    auto &path = level.paths[i];
+    // first coord on the path is the button - batteries are along the way
+    auto button_coord = path[0];
+    if (level.energy[button_coord.index] == 0) {
+      // if no energy, but a bot is on it, we should energize the path
+      if (level.map[button_coord.index] & MapContent::RobotBit) {
+        // energize the path
+        for (u8 j = 0; path[j].index != 0xff; ++j) {
+          auto coord = path[j];
+          level.energy[coord.index]++;
+          metatile_updates.enqueue(coord.index);
+        }
+      }
+    } else {
+      // if energy, but no bot is on it, we should de-energize the path
+      if (!(level.map[button_coord.index] & MapContent::RobotBit)) {
+        // de-energize the path
+        for (u8 j = 0; path[j].index != 0xff; ++j) {
+          auto coord = path[j];
+          level.energy[coord.index]--;
+          metatile_updates.enqueue(coord.index);
+        }
+      }
+    }
+    STOP_MESEN_WATCH("path");
+  }
+  STOP_MESEN_WATCH("paths");
+}
 __attribute__((noinline)) void LevelScreen::loop() {
   Robot &player = level.robots[0];
   while (current_game_state == GameState::LevelScreen) {
     ppu_wait_nmi();
+
     START_MESEN_WATCH("level");
     pad_poll(0);
     u8 held = pad_state(0);
@@ -62,92 +155,12 @@ __attribute__((noinline)) void LevelScreen::loop() {
         // TODO: just reset level instead?
       }
     }
-    switch (player.state) {
-    case Robot::State::Idle:
-      if (held & PAD_UP) {
-        player.state = Robot::State::Moving;
-        player.direction = Direction::North;
-        player.target_x = player.x;
-        player.target_y = player.y - 16;
-      }
-      if (held & PAD_DOWN) {
-        player.state = Robot::State::Moving;
-        player.direction = Direction::South;
-        player.target_x = player.x;
-        player.target_y = player.y + 16;
-      }
-      if (held & PAD_LEFT) {
-        player.state = Robot::State::Moving;
-        player.direction = Direction::West;
-        player.target_x = player.x - 16;
-        player.target_y = player.y;
-      }
-      if (held & PAD_RIGHT) {
-        player.state = Robot::State::Moving;
-        player.direction = Direction::East;
-        player.target_x = player.x + 16;
-        player.target_y = player.y;
-      }
-      if (player.state == Robot::State::Moving) {
-        if ((player.coord.index + (s8)player.direction < 0 ||
-             player.coord.index + (s8)player.direction >=
-                 Level::ROWS * Level::COLUMNS ||
-             (level.map[player.coord.index + (s8)player.direction] &
-              MapContent::SolidBit) != 0)) {
-          player.state = Robot::State::Idle;
-          player.target_x = player.x;
-          player.target_y = player.y;
-        } else {
-          level.map[player.coord.index] &=
-              ~(u8)(MapContent::SolidBit | MapContent::RobotBit);
-          player.coord.index += (s8)player.direction;
-          level.map[player.coord.index] |=
-              (u8)(MapContent::SolidBit | MapContent::RobotBit);
-        }
-      }
-      break;
-    case Robot::State::Moving:
-      break;
-    case Robot::State::Preparing:
-      break;
-    case Robot::State::Executing:
-      break;
+    if (metatile_updates.empty()) {
+      handle_input(player, held);
+      update_robots();
+      update_paths();
     }
-    START_MESEN_WATCH("robots");
-    for (u8 i = 0; i < level.num_robots; ++i) {
-      level.robots[i].update();
-    }
-    STOP_MESEN_WATCH("robots");
-    START_MESEN_WATCH("paths");
-    for (u8 i = 0; i < level.num_paths; ++i) {
-      START_MESEN_WATCH("path");
-      auto &path = level.paths[i];
-      // first coord on the path is the button - batteries are along the way
-      auto button_coord = path[0];
-      if (level.energy[button_coord.index] == 0) {
-        // if no energy, but a bot is on it, we should energize the path
-        if (level.map[button_coord.index] & MapContent::RobotBit) {
-          // energize the path
-          for (u8 j = 0; path[j].index != 0xff; ++j) {
-            auto coord = path[j];
-            level.energy[coord.index]++;
-            // TODO: update metatile
-          }
-        }
-      } else {
-        // if energy, but no bot is on it, we should de-energize the path
-        if (!(level.map[button_coord.index] & MapContent::RobotBit)) {
-          // de-energize the path
-          for (u8 j = 0; path[j].index != 0xff; ++j) {
-            auto coord = path[j];
-            level.energy[coord.index]--;
-            // TODO: update metatile
-          }
-        }
-      }
-      STOP_MESEN_WATCH("path");
-    }
-    STOP_MESEN_WATCH("paths");
+    update_metatiles();
     render_sprites();
     STOP_MESEN_WATCH("level");
   }
@@ -199,4 +212,21 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
     banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
   }
   oam_hide_rest();
+}
+
+void LevelScreen::update_metatiles() {
+  Attributes::enable_vram_buffer();
+  for (u8 updates = 0; updates < 4 && !metatile_updates.empty(); ++updates) {
+    u8 index = metatile_updates.dequeue();
+    Coord coord = (Coord)index;
+    auto metatile = level.effective_metatile(index);
+    multi_vram_buffer_horz(
+        (char[2]){metatiles_ul[metatile], metatiles_ur[metatile]}, 2,
+        NTADR_A(coord.column * 2, coord.row * 2));
+    multi_vram_buffer_horz(
+        (char[2]){metatiles_dl[metatile], metatiles_dr[metatile]}, 2,
+        NTADR_A(coord.column * 2, coord.row * 2 + 1));
+    Attributes::set(coord.column, coord.row, metatiles_attr[metatile]);
+  }
+  Attributes::flush_vram_update();
 }

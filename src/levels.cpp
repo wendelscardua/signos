@@ -1,5 +1,6 @@
 #include "levels.hpp"
 #include "common.hpp"
+#include "mesen-integration.hpp"
 
 __attribute__((
     section(".prg_ram.noinit"))) u8 Level::map[Level::ROWS * Level::COLUMNS];
@@ -90,13 +91,12 @@ Robot &Level::add_robot(Coord &coord) {
 
 u8 Level::effective_metatile(u8 index) {
   auto metatile = metatiles[index];
-  auto map_content = map[index];
   auto energy_content = energy[index];
 
   if (energy_content > 0) {
-    if (map_content >= 0x05 && map_content <= 0x13) { // cables and buttons
+    if (metatile >= 0x05 && metatile <= 0x13) { // cables and buttons
       metatile += 0x20; // lit up metatiles are 0x20 below the unlit ones
-    } else if (map_content >= 0x14 && map_content <= 0x17) { // batteries
+    } else if (metatile >= 0x14 && metatile <= 0x17) { // batteries
       metatile =
           0x14 + energy_content; // battery metatiles are sorted by energy value
       if (metatile > 0x17) {
