@@ -17,7 +17,8 @@ public:
   void handle_input(Robot &player, u8 &held);
   void update_robots();
   void update_paths();
-
+  void open_doors(u8 index);
+  void close_doors(u8 index);
   void render_sprites();
   void update_metatiles();
 };

@@ -122,6 +122,10 @@ void LevelScreen::update_paths() {
           auto coord = path[j];
           level.energy[coord.index]++;
           metatile_updates.enqueue(coord.index);
+          if ((level.map[coord.index] & MapContent::BatteryBit) &&
+              level.energy[coord.index] >= 3) {
+            open_doors(coord.index);
+          }
         }
       }
     } else {
@@ -132,6 +136,10 @@ void LevelScreen::update_paths() {
           auto coord = path[j];
           level.energy[coord.index]--;
           metatile_updates.enqueue(coord.index);
+          if ((level.map[coord.index] & MapContent::BatteryBit) &&
+              level.energy[coord.index] < 3) {
+            close_doors(coord.index);
+          }
         }
       }
     }
@@ -229,4 +237,26 @@ void LevelScreen::update_metatiles() {
     Attributes::set(coord.column, coord.row, metatiles_attr[metatile]);
   }
   Attributes::flush_vram_update();
+}
+
+void LevelScreen::open_doors(u8 index) {
+  const s8 deltas[] = {-16, 16, -1, 1};
+  for (auto delta : deltas) {
+    u8 neighbor_index = (u8)(index + delta);
+    if (level.map[neighbor_index] & MapContent::DoorBit) {
+      level.energy[neighbor_index] = 3;
+      metatile_updates.enqueue(neighbor_index);
+    }
+  }
+}
+
+void LevelScreen::close_doors(u8 index) {
+  const s8 deltas[] = {-16, 16, -1, 1};
+  for (auto delta : deltas) {
+    u8 neighbor_index = (u8)(index + delta);
+    if (level.map[neighbor_index] & MapContent::DoorBit) {
+      level.energy[neighbor_index] = 0;
+      metatile_updates.enqueue(neighbor_index);
+    }
+  }
 }

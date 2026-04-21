@@ -30,6 +30,7 @@ enum MapContent : u8 {
   DoorBit = 2,
   ButtonBit = 4,
   RobotBit = 8,
+  BatteryBit = 16,
 };
 
 enum class GameState : u8 {

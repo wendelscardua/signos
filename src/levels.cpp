@@ -57,7 +57,7 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
 
     if (metatile == 0x14 || metatile == 0x15 || metatile == 0x16 ||
         metatile == 0x17) { // batteries
-      map[index] |= (u8)MapContent::SolidBit;
+      map[index] |= (u8)(MapContent::SolidBit | MapContent::BatteryBit);
       energy[index] = metatile - 0x14;
     }
 
@@ -92,6 +92,7 @@ Robot &Level::add_robot(Coord &coord) {
 u8 Level::effective_metatile(u8 index) {
   auto metatile = metatiles[index];
   auto energy_content = energy[index];
+  auto map_content = map[index];
 
   if (energy_content > 0) {
     if (metatile >= 0x05 && metatile <= 0x13) { // cables and buttons
@@ -102,6 +103,8 @@ u8 Level::effective_metatile(u8 index) {
       if (metatile > 0x17) {
         metatile = 0x17;
       }
+    } else if (map_content & MapContent::DoorBit) { // doors
+      metatile += 1; // open doors are 1 metatile after closed ones
     }
   } else if (index == entrance.index) {
     metatile = 0x1c;
