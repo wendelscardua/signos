@@ -263,7 +263,7 @@ class LdtkReader
       grid_size = @tiles['__gridSize']
 
       raise "Wrong grid size for level #{@id}" if grid_size != 16
-      raise "Level #{@id} is too large" if @columns > 16 && @rows > 15
+      raise "Level #{@id} is too large" if @columns > 16 && @rows > 10
 
       @metatiles = Array.new(@columns) { Array.new(@rows) { 0 } }
 
