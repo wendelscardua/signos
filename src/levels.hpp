@@ -19,6 +19,7 @@ public:
   static u8 map[ROWS * COLUMNS];
   static u8 energy[ROWS * COLUMNS];
   static Card script[MAX_CARDS];
+  static u8 script_nesting;
 
   Coord entrance, exit;
 

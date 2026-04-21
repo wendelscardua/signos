@@ -34,7 +34,8 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
     vram_put(metatiles_dr[metatile]);
     Attributes::set(coord.column, coord.row, metatiles_attr[metatile]);
   }
-  for (u8 index = 0xc1; index < 0xce; index++) {
+  for (u8 index = CARD_START_INDEX;
+       index < CARD_START_INDEX + 2 * Level::MAX_CARDS; index++) {
     Coord coord = (Coord)index;
     u8 metatile = level.effective_metatile(index);
     vram_adr((unsigned int)NTADR_A(coord.column * 2, coord.row * 2));
@@ -45,7 +46,8 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
     vram_put(metatiles_dr[metatile]);
     Attributes::set(coord.column, coord.row, metatiles_attr[metatile]);
   }
-  for (u8 index = 0xd1; index < 0xde; index++) {
+  for (u8 index = CARD_START_INDEX + 0x10;
+       index < CARD_START_INDEX + 0x10 + 2 * Level::MAX_CARDS; index++) {
     Coord coord = (Coord)index;
     u8 metatile = level.effective_metatile(index);
     vram_adr((unsigned int)NTADR_A(coord.column * 2, coord.row * 2));
@@ -69,9 +71,13 @@ __attribute__((noinline)) LevelScreen::~LevelScreen() {
   ppu_off();
 }
 
-void LevelScreen::handle_input(Robot &player, u8 &held) {
+void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held) {
   switch (player.state) {
   case Robot::State::Idle:
+    if (pressed & PAD_B) {
+      player.state = Robot::State::Preparing;
+      player.script_index = 0;
+    }
     if (held & PAD_UP) {
       player.state = Robot::State::Moving;
       player.direction = Direction::North;
@@ -113,10 +119,52 @@ void LevelScreen::handle_input(Robot &player, u8 &held) {
             (u8)(MapContent::SolidBit | MapContent::RobotBit);
       }
     }
+
     break;
   case Robot::State::Moving:
     break;
   case Robot::State::Preparing:
+    if (pressed & PAD_UP) {
+      if (player.script_index + level.script_nesting < Level::MAX_CARDS) {
+        level.script[player.script_index] = Card::UpCard;
+        draw_card(player.script_index);
+        player.script_index++;
+      }
+    } else if (pressed & PAD_DOWN) {
+      if (player.script_index + level.script_nesting < Level::MAX_CARDS) {
+        level.script[player.script_index] = Card::DownCard;
+        draw_card(player.script_index);
+        player.script_index++;
+      }
+    } else if (pressed & PAD_LEFT) {
+      if (player.script_index + level.script_nesting < Level::MAX_CARDS) {
+        level.script[player.script_index] = Card::LeftCard;
+        draw_card(player.script_index);
+        player.script_index++;
+      }
+    } else if (pressed & PAD_RIGHT) {
+      if (player.script_index + level.script_nesting < Level::MAX_CARDS) {
+        level.script[player.script_index] = Card::RightCard;
+        draw_card(player.script_index);
+        player.script_index++;
+      }
+    } else if (pressed & PAD_B) {
+      if (player.script_index + 2 * level.script_nesting < Level::MAX_CARDS) {
+        level.script[player.script_index] = Card::PrepareCard;
+        draw_card(player.script_index);
+        player.script_index++;
+        level.script_nesting++;
+      }
+    } else if (pressed & PAD_A) {
+      if (level.script_nesting > 0) {
+        level.script[player.script_index] = Card::SignalCard;
+        draw_card(player.script_index);
+        player.script_index++;
+        level.script_nesting--;
+      } else {
+        player.state = Robot::State::Executing;
+      }
+    }
     break;
   case Robot::State::Executing:
     break;
@@ -186,7 +234,7 @@ __attribute__((noinline)) void LevelScreen::loop() {
       }
     }
     if (metatile_updates.empty()) {
-      handle_input(player, held);
+      handle_input(player, pressed, held);
       update_robots();
       update_paths();
     }
@@ -281,4 +329,13 @@ void LevelScreen::close_doors(u8 index) {
       metatile_updates.enqueue(neighbor_index);
     }
   }
+}
+
+void LevelScreen::draw_card(u8 card_index) {
+  const u8 card_start = 0xc1;
+  u8 index = card_start + card_index * 2;
+  metatile_updates.enqueue(index);
+  metatile_updates.enqueue(index + 1);
+  metatile_updates.enqueue(index + 16);
+  metatile_updates.enqueue(index + 17);
 }

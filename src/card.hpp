@@ -4,7 +4,7 @@ enum Card {
   EmptyCard,
   UpCard,
   DownCard,
-  RigntCard,
+  RightCard,
   LeftCard,
   PrepareCard,
   SignalCard,
