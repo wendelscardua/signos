@@ -17,6 +17,8 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
   Coord &robotCoords = *(Coord *)cursor;
   auto &player = add_robot(robotCoords);
 
+  player.player = true;
+
   entrance = player.coord;
 
   cursor = (Coord *)(cursor) + 1;
@@ -89,6 +91,7 @@ Level::Level(const void *level_data) : num_robots(0), num_paths(0) {
 
 Robot &Level::add_robot(Coord &coord) {
   robots[num_robots].coord = coord;
+  robots[num_robots].player = false;
   robots[num_robots].direction = Direction::East;
   robots[num_robots].x = 16.0_u8_8 * coord.column;
   robots[num_robots].y = 16.0_u8_8 * coord.row;

@@ -237,56 +237,14 @@ __attribute__((noinline)) void LevelScreen::loop() {
 }
 
 __attribute__((noinline)) void LevelScreen::render_sprites() {
-  Robot &player = level.robots[0];
-  {
-    u8 *metasprite;
-    switch (player.direction) {
-    case Direction::East:
-      metasprite = (u8 *)metasprite_RobotRight;
-      break;
-    case Direction::West:
-      metasprite = (u8 *)metasprite_RobotLeft;
-      break;
-    case Direction::North:
-      metasprite = (u8 *)metasprite_RobotUp;
-      break;
-    case Direction::South:
-      metasprite = (u8 *)metasprite_RobotDown;
-      break;
-    default:
-      metasprite = (u8 *)metasprite_RobotRight;
-      break;
-    }
-    banked_oam_meta_spr(player.x.as_i(), player.y.as_i(), metasprite);
-    if (player.state == Robot::State::Executing) {
-      execution_index = player.script_index;
-    }
-  }
-  for (u8 index = 1; index < level.num_robots; ++index) {
+  for (u8 index = 0; index < level.num_robots; ++index) {
     Robot &robot = level.robots[index];
-    u8 *metasprite;
-    switch (robot.direction) {
-    case Direction::East:
-      metasprite = (u8 *)metasprite_OtherRobotRight;
-      break;
-    case Direction::West:
-      metasprite = (u8 *)metasprite_OtherRobotLeft;
-      break;
-    case Direction::North:
-      metasprite = (u8 *)metasprite_OtherRobotUp;
-      break;
-    case Direction::South:
-      metasprite = (u8 *)metasprite_OtherRobotDown;
-      break;
-    default:
-      metasprite = (u8 *)metasprite_OtherRobotRight;
-      break;
-    }
-    banked_oam_meta_spr(robot.x.as_i(), robot.y.as_i(), metasprite);
+    robot.render_sprite();
     if (robot.state == Robot::State::Executing) {
       execution_index = robot.script_index;
     }
   }
+  Robot &player = level.robots[0];
   if (player.state == Robot::State::Preparing) {
     if (player.script_index == Level::MAX_CARDS) {
       Coord card_position =
