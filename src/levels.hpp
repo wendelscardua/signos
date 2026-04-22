@@ -6,8 +6,6 @@
 #include "signal.hpp"
 class Level {
 public:
-  static constexpr u8 NUM_LEVELS = 2;
-
   static constexpr u8 MAX_ROBOTS = 8;
   static constexpr u8 MAX_BUTTONS = 8;
   static constexpr u8 MAX_PATHS = 8;

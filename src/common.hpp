@@ -35,10 +35,15 @@ enum MapContent : u8 {
 
 enum class GameState : u8 {
   TitleScreen,
+  LevelSelectScreen,
   LevelScreen,
 };
 
+const u32 SIGNATURE = 0x31415926;
+const u8 NUM_LEVELS = 12;
+
 extern GameState current_game_state;
+extern volatile u8 level_completed[NUM_LEVELS];
 
 // neslib/nesdoug internal stuff
 

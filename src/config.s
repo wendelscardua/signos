@@ -8,7 +8,7 @@
 
                                 ; Kilobytes
         __prg_rom_size = 64
-        __chr_rom_size = 8
+        __chr_rom_size = 16
         __prg_nvram_size = 8
         __battery = 1
 

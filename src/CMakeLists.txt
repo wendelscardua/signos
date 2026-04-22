@@ -50,9 +50,11 @@ add_library(SourceObj
   OBJECT
 
   config.s
+  pal_bright_table.s
 
   main.cpp
   title-screen.cpp
+  level-select-screen.cpp
   level-screen.cpp
 
   attributes.cpp
@@ -80,20 +82,31 @@ set_property(
 
   main-bg.chr
   main-spr.chr
+  level-select-bg.chr
+  level-select-spr.chr
   
   main-bg.pal
   main-spr.pal
-  
+  level-select-bg.pal
+  level-select-spr.pal
+
   title.nam
+  level-select.nam
 )
 
 add_raw_asset(SOURCE "main-bg.chr")
 add_raw_asset(SOURCE "main-spr.chr")
+add_raw_asset(SOURCE "level-select-bg.chr")
+add_raw_asset(SOURCE "level-select-spr.chr")
 
 add_raw_asset(SOURCE "main-bg.pal")
 add_raw_asset(SOURCE "main-spr.pal")
+add_raw_asset(SOURCE "level-select-bg.pal")
+add_raw_asset(SOURCE "level-select-spr.pal")
+
 
 add_raw_asset(SOURCE "title.nam")
+add_raw_asset(SOURCE "level-select.nam")
 
 set_property(
   SOURCE

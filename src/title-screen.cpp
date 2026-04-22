@@ -39,7 +39,7 @@ __attribute__((noinline)) void TitleScreen::loop() {
     if (pressed & (PAD_A | PAD_START)) {
       {
         GGSound::stop();
-        current_game_state = GameState::LevelScreen;
+        current_game_state = GameState::LevelSelectScreen;
       }
     }
   }

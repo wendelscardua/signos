@@ -17,6 +17,8 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
 
   load_level_assets();
 
+  Attributes::init();
+
   oam_clear();
 
   scroll(0, 0);
