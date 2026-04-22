@@ -73,22 +73,38 @@ __attribute__((noinline)) LevelScreen::~LevelScreen() {
 }
 
 void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held) {
+  static u8 held_timer = 0;
+  const u8 HELD_TIMER_MAX = 8;
   switch (player.state) {
   case Robot::State::Idle:
+    if (pressed) {
+      held_timer = 0;
+    }
+    if (held && held_timer < HELD_TIMER_MAX) {
+      held_timer++;
+    }
     if (pressed & PAD_B) {
       player.state = Robot::State::Preparing;
       player.script_index = 0;
     }
-    if (held & PAD_UP) {
+    if ((pressed & PAD_UP) && player.direction != Direction::North) {
+      player.direction = Direction::North;
+    } else if ((held & PAD_UP) && held_timer >= HELD_TIMER_MAX) {
       player.move_up();
     }
-    if (held & PAD_DOWN) {
+    if ((pressed & PAD_DOWN) && player.direction != Direction::South) {
+      player.direction = Direction::South;
+    } else if ((held & PAD_DOWN) && held_timer >= HELD_TIMER_MAX) {
       player.move_down();
     }
-    if (held & PAD_LEFT) {
+    if ((pressed & PAD_LEFT) && player.direction != Direction::West) {
+      player.direction = Direction::West;
+    } else if ((held & PAD_LEFT) && held_timer >= HELD_TIMER_MAX) {
       player.move_left();
     }
-    if (held & PAD_RIGHT) {
+    if ((pressed & PAD_RIGHT) && player.direction != Direction::East) {
+      player.direction = Direction::East;
+    } else if ((held & PAD_RIGHT) && held_timer >= HELD_TIMER_MAX) {
       player.move_right();
     }
     clamp_robot_movement(player);
