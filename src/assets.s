@@ -1,12 +1,12 @@
     .section .prg_rom_0,"aR",@progbits
 
-    .global bg_palette, spr_palette
-    bg_palette: .incbin "BG.pal"
-    spr_palette: .incbin "SPR.pal"
+    .global main_bg_palette, main_spr_palette
+    main_bg_palette: .incbin "main-bg.pal"
+    main_spr_palette: .incbin "main-spr.pal"
 
     .global title_nametable
     title_nametable: .incbin "title.nam"
     
     .section .chr_rom,"aR",@progbits
-    .incbin "BG.chr"
-    .incbin "SPR.chr"
+    .incbin "main-bg.chr"
+    .incbin "main-spr.chr"
