@@ -237,8 +237,22 @@ __attribute__((noinline)) void LevelScreen::loop() {
 }
 
 __attribute__((noinline)) void LevelScreen::render_sprites() {
-  for (u8 index = 0; index < level.num_robots; ++index) {
-    Robot &robot = level.robots[index];
+  u8 robot_indices[Level::MAX_ROBOTS];
+  for (u8 index = 0; index < Level::MAX_ROBOTS; ++index) {
+    robot_indices[index] = index;
+  }
+  for (u8 i = 0; i < level.num_robots - 1; ++i) {
+    for (u8 j = i + 1; j < level.num_robots; ++j) {
+      if (level.robots[robot_indices[i]].coord.row <
+          level.robots[robot_indices[j]].coord.row) {
+        u8 temp = robot_indices[i];
+        robot_indices[i] = robot_indices[j];
+        robot_indices[j] = temp;
+      }
+    }
+  }
+  for (u8 i = 0; i < level.num_robots; ++i) {
+    Robot &robot = level.robots[robot_indices[i]];
     robot.render_sprite();
     if (robot.state == Robot::State::Executing) {
       execution_index = robot.script_index;
