@@ -10,4 +10,8 @@ extern "C" void banked_oam_meta_spr_horizontal(int x, char y, const void *data);
 // [assets bank] loads title assets
 void load_title_assets();
 
+// [assets bank] loads level select assets
+void load_level_select_assets();
+
+// [assets bank] loads level assets
 void load_level_assets();

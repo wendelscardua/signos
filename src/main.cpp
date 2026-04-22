@@ -1,9 +1,9 @@
 #include "bank-helper.hpp"
-#include "banked-asset-helpers.hpp"
 #include "common.hpp"
 #include "ggsound.hpp"
 #include "level-screen.hpp"
-#include "levels.hpp"
+#include "level-select-screen.hpp"
+#include "mesen-integration.hpp"
 #include "soundtrack-ptr.hpp"
 #include "title-screen.hpp"
 #include <mapper.h>
@@ -12,6 +12,11 @@
 #include <peekpoke.h>
 
 GameState current_game_state;
+
+__attribute__((section(".prg_ram.noinit"))) volatile u32 signature;
+
+__attribute__((
+    section(".prg_ram.noinit"))) volatile u8 level_completed[NUM_LEVELS];
 
 static void main_init() {
   set_prg_8000(0);
@@ -26,16 +31,8 @@ static void main_init() {
 
   bank_bg(0);
   bank_spr(1);
-  set_chr_mode_0(0);
-  set_chr_mode_1(2);
-  set_chr_mode_2(4);
-  set_chr_mode_3(5);
-  set_chr_mode_4(6);
-  set_chr_mode_5(7);
 
   set_vram_buffer();
-
-  load_title_assets();
 
   current_game_state = GameState::TitleScreen;
 
@@ -44,6 +41,13 @@ static void main_init() {
       ScopedBank bank(GGSound::BANK);
       GGSound::init(GGSound::Region::NTSC, song_list, sfx_list,
                     instrument_list);
+    }
+  }
+
+  if (signature != SIGNATURE) {
+    signature = SIGNATURE;
+    for (u8 i = 0; i < NUM_LEVELS; i++) {
+      level_completed[i] = false;
     }
   }
 
@@ -60,6 +64,10 @@ int main() {
     case GameState::TitleScreen: {
       TitleScreen title_screen;
       title_screen.loop();
+    } break;
+    case GameState::LevelSelectScreen: {
+      LevelSelectScreen level_select_screen(selected_level);
+      level_select_screen.loop();
     } break;
     case GameState::LevelScreen: {
       LevelScreen level_screen(selected_level);

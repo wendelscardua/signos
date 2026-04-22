@@ -3,6 +3,9 @@
 #include "common.hpp"
 
 namespace Attributes {
+  // loads shadow table from vram (rendering must be off)
+  void init();
+
   // Sets the attribute for a single metatile (at meta_x, meta_y)
   // on the shadow table
   void set(u8 meta_x, u8 meta_y, u8 attribute);

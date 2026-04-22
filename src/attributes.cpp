@@ -7,6 +7,13 @@ namespace Attributes {
   u8 dirty_index;
   bool buffered = false;
 
+  void init() {
+    vram_adr(NAMETABLE_A + 0x3c0);
+    vram_read(shadow, 64);
+    vram_adr(NAMETABLE_D + 0x3c0);
+    vram_read(shadow + 64, 64);
+  }
+
   void send_dirty_to_vram_buffer() {
     if (dirty_index == 0xff)
       return;
