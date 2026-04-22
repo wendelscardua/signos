@@ -13,9 +13,10 @@ public:
   u8 execution_index;
 
   Level level;
+  u8 level_number;
   Queue<u8, 32> metatile_updates;
 
-  LevelScreen(u8 level);
+  LevelScreen(u8 level_number);
   ~LevelScreen();
 
   void loop();

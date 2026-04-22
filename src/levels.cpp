@@ -94,6 +94,10 @@ Robot &Level::add_robot(Coord &coord) {
   robots[num_robots].y = 16.0_u8_8 * coord.row;
   robots[num_robots].target_x = robots[num_robots].x;
   robots[num_robots].target_y = robots[num_robots].y;
+  robots[num_robots].script_index = 0;
+  robots[num_robots].state = Robot::State::Idle;
+  robots[num_robots].script_pointer = nullptr;
+  robots[num_robots].execution_frame_counter = 0;
   map[coord.index] |= (u8)MapContent::SolidBit;
   num_robots++;
   return robots[num_robots - 1];
