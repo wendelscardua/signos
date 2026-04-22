@@ -6,14 +6,14 @@
 
 __attribute__((noinline, section(".prg_rom_fixed"))) void load_title_palette() {
   ScopedBank scopedBank(PALETTES_BANK);
-  pal_bg(bg_palette);
-  pal_spr(spr_palette);
+  pal_bg(main_bg_palette);
+  pal_spr(main_spr_palette);
 }
 
 __attribute__((noinline, section(".prg_rom_fixed"))) void load_level_palette() {
   ScopedBank scopedBank(PALETTES_BANK);
-  pal_bg(bg_palette);
-  pal_spr(spr_palette);
+  pal_bg(main_bg_palette);
+  pal_spr(main_spr_palette);
 }
 
 __attribute__((noinline, section(".prg_rom_0"))) void load_title_assets() {

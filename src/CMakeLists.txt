@@ -78,20 +78,21 @@ set_property(
   PROPERTY
   OBJECT_DEPENDS
 
-  BG.chr
-  SPR.chr
+  main-bg.chr
+  main-spr.chr
   
-  BG.pal
-  SPR.pal
+  main-bg.pal
+  main-spr.pal
   
   title.nam
 )
 
-add_raw_asset(SOURCE "BG.chr")
-add_raw_asset(SOURCE "SPR.chr")
+add_raw_asset(SOURCE "main-bg.chr")
+add_raw_asset(SOURCE "main-spr.chr")
 
-add_raw_asset(SOURCE "BG.pal")
-add_raw_asset(SOURCE "SPR.pal")
+add_raw_asset(SOURCE "main-bg.pal")
+add_raw_asset(SOURCE "main-spr.pal")
+
 add_raw_asset(SOURCE "title.nam")
 
 set_property(
