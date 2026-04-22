@@ -19,6 +19,7 @@ public:
   static constexpr fu8_8 SPEED = 1.25_u8_8;
   static constexpr u8 EXECUTION_FRAMES = 32;
 
+  bool player;
   State state;
   Coord coord;
   Direction direction;
@@ -36,4 +37,5 @@ public:
   void move_left();
   void move_right();
   bool scripted();
+  void render_sprite();
 };
