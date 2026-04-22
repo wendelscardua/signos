@@ -15,5 +15,7 @@ extern "C" const char main_bg_palette[];
 extern "C" const char main_spr_palette[];
 extern "C" const char level_select_bg_palette[];
 extern "C" const char level_select_spr_palette[];
+extern "C" const char boot_bg_palette[];
 extern "C" const char title_nametable[];
 extern "C" const char level_select_nametable[];
+extern "C" const char boot_nametable[];

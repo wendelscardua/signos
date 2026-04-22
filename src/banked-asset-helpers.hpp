@@ -15,3 +15,6 @@ void load_level_select_assets();
 
 // [assets bank] loads level assets
 void load_level_assets();
+
+// [assets bank] loads boot assets
+void load_boot_assets();
