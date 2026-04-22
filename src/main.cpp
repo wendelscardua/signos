@@ -1,4 +1,5 @@
 #include "bank-helper.hpp"
+#include "boot-screen.hpp"
 #include "common.hpp"
 #include "ggsound.hpp"
 #include "level-screen.hpp"
@@ -34,7 +35,7 @@ static void main_init() {
 
   set_vram_buffer();
 
-  current_game_state = GameState::TitleScreen;
+  current_game_state = GameState::BootScreen;
 
   {
     {
@@ -61,6 +62,10 @@ int main() {
 
   while (true) {
     switch (current_game_state) {
+    case GameState::BootScreen: {
+      BootScreen boot_screen;
+      boot_screen.loop();
+    } break;
     case GameState::TitleScreen: {
       TitleScreen title_screen;
       title_screen.loop();
