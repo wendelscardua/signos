@@ -237,6 +237,12 @@ __attribute__((noinline)) void LevelScreen::loop() {
 }
 
 __attribute__((noinline)) void LevelScreen::render_sprites() {
+  if (level.signal.active) {
+    u8 x = level.signal.x.as_i();
+    u8 y = level.signal.y.as_i();
+    banked_oam_meta_spr(x, y, (u8 *)metasprite_Signal);
+  }
+
   u8 robot_indices[Level::MAX_ROBOTS];
   for (u8 index = 0; index < Level::MAX_ROBOTS; ++index) {
     robot_indices[index] = index;
@@ -285,11 +291,6 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
       u8 y = card_position.row * 16;
       banked_oam_meta_spr(x, y, (u8 *)metasprite_ProcessingCursor);
     }
-  }
-  if (level.signal.active) {
-    u8 x = level.signal.x.as_i();
-    u8 y = level.signal.y.as_i();
-    banked_oam_meta_spr(x, y, (u8 *)metasprite_Signal);
   }
   oam_hide_rest();
 }
