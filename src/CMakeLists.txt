@@ -53,6 +53,7 @@ add_library(SourceObj
   pal_bright_table.s
 
   main.cpp
+  boot-screen.cpp
   title-screen.cpp
   level-select-screen.cpp
   level-screen.cpp
@@ -61,6 +62,7 @@ add_library(SourceObj
   robot.cpp
   signal.cpp
   levels.cpp
+  utils.cpp
 
   banked-asset-helpers.s
   banked-asset-helpers.cpp
