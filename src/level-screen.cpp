@@ -217,8 +217,7 @@ __attribute__((noinline)) void LevelScreen::loop() {
     if (pressed & PAD_SELECT) {
       {
         GGSound::stop();
-        current_game_state = GameState::TitleScreen;
-        // TODO: just reset level instead?
+        current_game_state = GameState::LevelSelectScreen;
       }
     }
     if (metatile_updates.empty()) {
