@@ -34,6 +34,7 @@ enum MapContent : u8 {
 };
 
 enum class GameState : u8 {
+  BootScreen,
   TitleScreen,
   LevelSelectScreen,
   LevelScreen,

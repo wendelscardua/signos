@@ -89,9 +89,11 @@ set_property(
   main-spr.pal
   level-select-bg.pal
   level-select-spr.pal
+  boot-bg.pal
 
   title.nam
   level-select.nam
+  boot-screen.nam
 )
 
 add_raw_asset(SOURCE "main-bg.chr")
@@ -103,10 +105,11 @@ add_raw_asset(SOURCE "main-bg.pal")
 add_raw_asset(SOURCE "main-spr.pal")
 add_raw_asset(SOURCE "level-select-bg.pal")
 add_raw_asset(SOURCE "level-select-spr.pal")
-
+add_raw_asset(SOURCE "boot-bg.pal")
 
 add_raw_asset(SOURCE "title.nam")
 add_raw_asset(SOURCE "level-select.nam")
+add_raw_asset(SOURCE "boot-screen.nam")
 
 set_property(
   SOURCE

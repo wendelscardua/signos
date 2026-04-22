@@ -23,6 +23,11 @@ __attribute__((noinline, section(".prg_rom_fixed"))) void load_level_palette() {
   pal_spr(main_spr_palette);
 }
 
+__attribute__((noinline, section(".prg_rom_fixed"))) void load_boot_palette() {
+  ScopedBank scopedBank(PALETTES_BANK);
+  pal_bg(boot_bg_palette);
+}
+
 __attribute__((noinline, section(".prg_rom_0"))) void load_title_assets() {
   set_chr_mode_0(0);
   set_chr_mode_1(2);
@@ -59,4 +64,16 @@ __attribute__((noinline, section(".prg_rom_0"))) void load_level_assets() {
   vram_adr(NAMETABLE_A);
   vram_fill(0x00, 1024);
   load_level_palette();
+}
+
+__attribute__((noinline, section(".prg_rom_0"))) void load_boot_assets() {
+  set_chr_mode_0(0);
+  set_chr_mode_1(2);
+  set_chr_mode_2(4);
+  set_chr_mode_3(5);
+  set_chr_mode_4(6);
+  set_chr_mode_5(7);
+  vram_adr(NAMETABLE_A);
+  vram_write((void *)boot_nametable, 1024);
+  load_boot_palette();
 }
