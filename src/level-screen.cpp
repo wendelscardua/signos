@@ -9,7 +9,7 @@
 #include <neslib.h>
 
 __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
-    : level(levels[level_number]) {
+    : level(levels[level_number]), level_number(level_number) {
 
   pal_bright(0);
 
@@ -229,6 +229,11 @@ __attribute__((noinline)) void LevelScreen::loop() {
     }
     update_metatiles();
     render_sprites();
+
+    if (player.coord.index == level.exit.index) {
+      level_completed[level_number] = true;
+      current_game_state = GameState::LevelSelectScreen;
+    }
   }
 }
 
