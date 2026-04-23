@@ -50,6 +50,9 @@ void Robot::render_sprite() {
   Animation *animation = nullptr;
   switch (state) {
   case State::Idle:
+  case State::Preparing:
+  case State::Signaling:
+  case State::Executing:
     switch (direction) {
     case Direction::East:
       animation = &idle_right_animation;
