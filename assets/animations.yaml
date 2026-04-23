@@ -10,3 +10,15 @@ idle_down:
 idle_up:
   - [ RobotUpIdle1, 96 ]
   - [ RobotUpIdle2, 32 ]
+move_right:
+  - [ RobotRightMove2, 8 ]
+  - [ RobotRightIdle1, 8 ]
+move_left:
+  - [ RobotLeftMove2, 8 ]
+  - [ RobotLeftIdle1, 8 ]
+move_down:
+  - [ RobotDownMove2, 8 ]
+  - [ RobotDownIdle1, 8 ]
+move_up:
+  - [ RobotUpMove2, 8 ]
+  - [ RobotUpIdle1, 8 ]
