@@ -1,20 +1,4 @@
 find_program(
-  GENERATE_METASPRITES
-  generate-metasprites
-  PATHS "${CMAKE_SOURCE_DIR}/tools"
-)
-
-if (NOT GENERATE_METASPRITES)
-  message(FATAL_ERROR "The generate-metasprites tool is required!")
-endif()
-
-add_custom_command(
-  OUTPUT metasprites.s ${CMAKE_CURRENT_BINARY_DIR}/metasprites.hpp
-  COMMAND ${GENERATE_METASPRITES} generate ${CMAKE_CURRENT_BINARY_DIR}/metasprites.s ${CMAKE_CURRENT_BINARY_DIR}/metasprites.hpp ${CMAKE_SOURCE_DIR}/assets/metasprites.nss --bank .prg_rom_1 --label-prefix metasprite
-  DEPENDS ${GENERATE_METASPRITES} ${CMAKE_SOURCE_DIR}/assets/metasprites.nss
-)
-
-find_program(
   GENERATE_METATILES
   generate-metatiles
   PATHS "${CMAKE_SOURCE_DIR}/tools"
@@ -46,6 +30,8 @@ add_custom_command(
   DEPENDS ${CMAKE_SOURCE_DIR}/assets/signos.ldtk ${LDTK_TOOL}
 )
 
+add_metasprite_asset(SOURCE "metasprites.nss" TARGET "metasprites.cpp" HEADER "metasprites.hpp" BANK 1 NAMESPACE "Metasprites")
+
 add_library(SourceObj
   OBJECT
 
@@ -63,17 +49,35 @@ add_library(SourceObj
   signal.cpp
   levels.cpp
   utils.cpp
+  animation.cpp
 
   banked-asset-helpers.s
   banked-asset-helpers.cpp
   ggsound.cpp
 
   assets.s
+  animation-defs.s
   soundtrack.hpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/levels.s
   ${CMAKE_CURRENT_BINARY_DIR}/metatiles.s
-  ${CMAKE_CURRENT_BINARY_DIR}/metasprites.s
+  ${CMAKE_CURRENT_BINARY_DIR}/metasprites.cpp 
+  ${CMAKE_CURRENT_BINARY_DIR}/animation-defs.hpp
+)
+
+find_program(
+  ANIMATOR_TOOL
+  animator
+  PATHS "${CMAKE_SOURCE_DIR}/tools"
+)
+if (NOT ANIMATOR_TOOL)
+  message(FATAL_ERROR "The animator tool is required!")
+endif()
+
+add_custom_command(
+    OUTPUT "${CMAKE_BINARY_DIR}/src/animation-defs.s" "${CMAKE_BINARY_DIR}/src/animation-defs.hpp"
+    COMMAND ${ANIMATOR_TOOL} animate "${CMAKE_SOURCE_DIR}/assets/animations.yaml" --asm-output "${CMAKE_BINARY_DIR}/src/animation-defs.s" --hpp-output "${CMAKE_BINARY_DIR}/src/animation-defs.hpp" --section ".prg_rom_1.rodata.animation"
+    DEPENDS ${ANIMATOR_TOOL} "${CMAKE_SOURCE_DIR}/assets/animations.yaml"
 )
 
 set_property(

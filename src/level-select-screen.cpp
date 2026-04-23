@@ -103,7 +103,7 @@ __attribute__((noinline)) void LevelSelectScreen::loop() {
     u8 cursor_x = (selected_level % 4 * 3 + 3) * 16 + 8;
     u8 cursor_y = (selected_level / 4 * 3 + 4) * 16 + 4;
 
-    banked_oam_meta_spr(cursor_x, cursor_y, (u8 *)metasprite_MouseCursor);
+    banked_oam_meta_spr(cursor_x, cursor_y, (u8 *)Metasprites::MouseCursor);
     oam_hide_rest();
   }
 }
