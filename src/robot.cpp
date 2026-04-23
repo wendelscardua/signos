@@ -84,9 +84,9 @@ void Robot::render_sprite() {
   if (animation != nullptr) {
     banked_lambda(1, [&]() {
       if (player) {
-        animation->reskin_update(x.as_i(), y.as_i());
+        animation->reskin_update(x.as_i(), y.as_i() + GAMEPLAY_SCROLL_Y);
       } else {
-        animation->update(x.as_i(), y.as_i());
+        animation->update(x.as_i(), y.as_i() + GAMEPLAY_SCROLL_Y);
       }
     });
   }

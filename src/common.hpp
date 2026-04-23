@@ -43,6 +43,9 @@ enum class GameState : u8 {
 const u32 SIGNATURE = 0x31415926;
 const u8 NUM_LEVELS = 12;
 
+// XXX: prevents robot heads clipping at the top because of 8x16 sprites
+const u8 GAMEPLAY_SCROLL_Y = 3;
+
 extern GameState current_game_state;
 extern volatile u8 level_completed[NUM_LEVELS];
 

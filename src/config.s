@@ -14,4 +14,4 @@
 
                                 ; Flags
         __four_screen = 0
-        __mirroring = 1 ; horizontal mirroring
+        __mirroring = 0 ; vertical mirroring
