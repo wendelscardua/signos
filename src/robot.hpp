@@ -1,5 +1,6 @@
 #pragma once
 
+#include "animation.hpp"
 #include "card.hpp"
 #include "common.hpp"
 #include <fixed_point.h>
@@ -25,6 +26,11 @@ public:
   Direction direction;
   fu8_8 x, y;
   fu8_8 target_x, target_y;
+
+  Animation idle_up{nullptr};
+  Animation idle_down{nullptr};
+  Animation idle_left{nullptr};
+  Animation idle_right{nullptr};
 
   Card *script_pointer;
   u8 script_index;

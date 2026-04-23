@@ -1,4 +1,5 @@
 #include "robot.hpp"
+#include "animation-defs.hpp"
 #include "bank-helper.hpp"
 #include "banked-asset-helpers.hpp"
 #include "mesen-integration.hpp"
@@ -8,7 +9,12 @@
 Robot::Robot()
     : player(false), coord(0), direction(Direction::East), x(0.0_u8_8),
       y(0.0_u8_8), target_x(0.0_u8_8), target_y(0.0_u8_8),
-      script_pointer(nullptr), execution_frame_counter(0) {}
+      script_pointer(nullptr), execution_frame_counter(0) {
+  idle_up = Animation{&idle_up_cells};
+  idle_down = Animation{&idle_down_cells};
+  idle_left = Animation{&idle_left_cells};
+  idle_right = Animation{&idle_right_cells};
+}
 
 bool Robot::scripted() { return script_pointer != nullptr; }
 
@@ -41,33 +47,32 @@ void Robot::move_right() {
 }
 
 void Robot::render_sprite() {
-  u8 *metasprite;
-  u8 reskin_metasprite[25];
-
-  switch (direction) {
-  case Direction::East:
-    metasprite = (u8 *)metasprite_RobotRightIdle1;
-    break;
-  case Direction::West:
-    metasprite = (u8 *)metasprite_RobotLeftIdle1;
-    break;
-  case Direction::North:
-    metasprite = (u8 *)metasprite_RobotUpIdle1;
-    break;
-  case Direction::South:
-    metasprite = (u8 *)metasprite_RobotDownIdle1;
-    break;
-  default:
-    metasprite = (u8 *)metasprite_RobotRightIdle1;
-    break;
-  }
-  if (player) {
-    banked_lambda(1, [&]() { memcpy(reskin_metasprite, metasprite, 25); });
-    for (u8 index = 3; index < 25; index += 4) {
-      // change palette
-      reskin_metasprite[index] = (reskin_metasprite[index] & ~0b11) | 0b01;
+  Animation *animation = nullptr;
+  switch (state) {
+  case State::Idle:
+    switch (direction) {
+    case Direction::East:
+      animation = &idle_right;
+      break;
+    case Direction::West:
+      animation = &idle_left;
+      break;
+    case Direction::North:
+      animation = &idle_up;
+      break;
+    case Direction::South:
+      animation = &idle_down;
+      break;
     }
-    metasprite = reskin_metasprite;
+    break;
   }
-  banked_oam_meta_spr(x.as_i(), y.as_i(), metasprite);
+  if (animation != nullptr) {
+    banked_lambda(1, [&]() {
+      if (player) {
+        animation->reskin_update(x.as_i(), y.as_i());
+      } else {
+        animation->update(x.as_i(), y.as_i());
+      }
+    });
+  }
 }

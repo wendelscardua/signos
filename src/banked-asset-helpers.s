@@ -1,5 +1,7 @@
 .section .prg_rom_fixed,"axR",@progbits
 
+BANK = 1
+
 .global banked_oam_meta_spr
 
 ; void banked_oam_meta_spr(char x, int y, const void *data);
@@ -16,7 +18,7 @@ banked_oam_meta_spr:
 
   jsr get_prg_8000
   pha
-  lda #mos24bank(metasprite_Signal)
+  lda #BANK
   jsr set_prg_8000
 
   ldx SPRID
@@ -97,7 +99,7 @@ banked_oam_meta_spr_horizontal:
 
   jsr get_prg_8000
   pha
-  lda #mos24bank(metasprite_Signal)
+  lda #BANK
   jsr set_prg_8000
 
   ldx SPRID

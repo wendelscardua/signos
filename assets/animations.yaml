@@ -1,0 +1,12 @@
+idle_right:
+  - [ RobotRightIdle1, 96 ]
+  - [ RobotRightIdle2, 32 ]
+idle_left:
+  - [ RobotLeftIdle1, 96 ]
+  - [ RobotLeftIdle2, 32 ]
+idle_down:
+  - [ RobotDownIdle1, 96 ]
+  - [ RobotDownIdle2, 32 ]
+idle_up:
+  - [ RobotUpIdle1, 96 ]
+  - [ RobotUpIdle2, 32 ]

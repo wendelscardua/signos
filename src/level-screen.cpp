@@ -2,6 +2,7 @@
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
 #include "ggsound.hpp"
+#include "mesen-integration.hpp"
 #include "metasprites.hpp"
 #include "metatiles.hpp"
 #include "robot.hpp"
@@ -210,7 +211,7 @@ __attribute__((noinline)) void LevelScreen::loop() {
   Robot &player = level.robots[0];
   while (current_game_state == GameState::LevelScreen) {
     ppu_wait_nmi();
-
+    START_MESEN_WATCH("gameplay");
     pad_poll(0);
     u8 held = pad_state(0);
     u8 pressed = get_pad_new(0);
@@ -233,14 +234,17 @@ __attribute__((noinline)) void LevelScreen::loop() {
       level_completed[level_number] = true;
       current_game_state = GameState::LevelSelectScreen;
     }
+
+    STOP_MESEN_WATCH("gameplay");
   }
 }
 
 __attribute__((noinline)) void LevelScreen::render_sprites() {
+  START_MESEN_WATCH("sprites");
   if (level.signal.active) {
     u8 x = level.signal.x.as_i();
     u8 y = level.signal.y.as_i();
-    banked_oam_meta_spr(x, y, (u8 *)metasprite_Signal);
+    banked_oam_meta_spr(x, y, (u8 *)Metasprites::Signal);
   }
 
   u8 robot_indices[Level::MAX_ROBOTS];
@@ -271,12 +275,12 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
           (Coord)(CARD_START_INDEX + (Level::MAX_CARDS - 1) * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)metasprite_WarningCursor);
+      banked_oam_meta_spr(x, y, (u8 *)Metasprites::WarningCursor);
     } else {
       Coord card_position = (Coord)(CARD_START_INDEX + player.script_index * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)metasprite_WritingCursor);
+      banked_oam_meta_spr(x, y, (u8 *)Metasprites::WritingCursor);
     }
   } else if (execution_index != 0xff) {
     if (execution_index == Level::MAX_CARDS) {
@@ -284,15 +288,16 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
           (Coord)(CARD_START_INDEX + (Level::MAX_CARDS - 1) * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)metasprite_ProcessingCursor);
+      banked_oam_meta_spr(x, y, (u8 *)Metasprites::ProcessingCursor);
     } else {
       Coord card_position = (Coord)(CARD_START_INDEX + execution_index * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)metasprite_ProcessingCursor);
+      banked_oam_meta_spr(x, y, (u8 *)Metasprites::ProcessingCursor);
     }
   }
   oam_hide_rest();
+  STOP_MESEN_WATCH("sprites");
 }
 
 void LevelScreen::update_metatiles() {
