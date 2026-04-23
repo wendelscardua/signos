@@ -1,19 +1,19 @@
 #include "robot.hpp"
 #include "animation-defs.hpp"
 #include "bank-helper.hpp"
-#include "banked-asset-helpers.hpp"
-#include "mesen-integration.hpp"
-#include "metasprites.hpp"
-#include <string.h>
 
 Robot::Robot()
     : player(false), coord(0), direction(Direction::East), x(0.0_u8_8),
       y(0.0_u8_8), target_x(0.0_u8_8), target_y(0.0_u8_8),
       script_pointer(nullptr), execution_frame_counter(0) {
-  idle_up = Animation{&idle_up_cells};
-  idle_down = Animation{&idle_down_cells};
-  idle_left = Animation{&idle_left_cells};
-  idle_right = Animation{&idle_right_cells};
+  idle_up_animation = Animation{&idle_up_cells};
+  idle_down_animation = Animation{&idle_down_cells};
+  idle_left_animation = Animation{&idle_left_cells};
+  idle_right_animation = Animation{&idle_right_cells};
+  move_up_animation = Animation{&move_up_cells};
+  move_down_animation = Animation{&move_down_cells};
+  move_left_animation = Animation{&move_left_cells};
+  move_right_animation = Animation{&move_right_cells};
 }
 
 bool Robot::scripted() { return script_pointer != nullptr; }
@@ -52,19 +52,34 @@ void Robot::render_sprite() {
   case State::Idle:
     switch (direction) {
     case Direction::East:
-      animation = &idle_right;
+      animation = &idle_right_animation;
       break;
     case Direction::West:
-      animation = &idle_left;
+      animation = &idle_left_animation;
       break;
     case Direction::North:
-      animation = &idle_up;
+      animation = &idle_up_animation;
       break;
     case Direction::South:
-      animation = &idle_down;
+      animation = &idle_down_animation;
       break;
     }
     break;
+  case State::Moving:
+    switch (direction) {
+    case Direction::East:
+      animation = &move_right_animation;
+      break;
+    case Direction::West:
+      animation = &move_left_animation;
+      break;
+    case Direction::North:
+      animation = &move_up_animation;
+      break;
+    case Direction::South:
+      animation = &move_down_animation;
+      break;
+    }
   }
   if (animation != nullptr) {
     banked_lambda(1, [&]() {

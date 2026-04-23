@@ -27,10 +27,14 @@ public:
   fu8_8 x, y;
   fu8_8 target_x, target_y;
 
-  Animation idle_up{nullptr};
-  Animation idle_down{nullptr};
-  Animation idle_left{nullptr};
-  Animation idle_right{nullptr};
+  Animation idle_up_animation{nullptr};
+  Animation idle_down_animation{nullptr};
+  Animation idle_left_animation{nullptr};
+  Animation idle_right_animation{nullptr};
+  Animation move_up_animation{nullptr};
+  Animation move_down_animation{nullptr};
+  Animation move_left_animation{nullptr};
+  Animation move_right_animation{nullptr};
 
   Card *script_pointer;
   u8 script_index;
