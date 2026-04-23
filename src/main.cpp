@@ -4,7 +4,6 @@
 #include "ggsound.hpp"
 #include "level-screen.hpp"
 #include "level-select-screen.hpp"
-#include "mesen-integration.hpp"
 #include "soundtrack-ptr.hpp"
 #include "title-screen.hpp"
 #include <mapper.h>
@@ -27,8 +26,10 @@ static void main_init() {
 
   ppu_off();
 
-  // set 8x8 sprite mode
-  oam_size(0);
+  set_mirroring(MIRROR_VERTICAL);
+
+  // set 8x16 sprite mode
+  oam_size(1);
 
   bank_bg(0);
   bank_spr(1);

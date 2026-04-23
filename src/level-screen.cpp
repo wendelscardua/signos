@@ -22,8 +22,6 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
 
   oam_clear();
 
-  scroll(0, 0);
-
   execution_stack_index = 0;
   execution_index = 0xff;
 
@@ -64,6 +62,9 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
   }
 
   Attributes::update_vram();
+
+  set_scroll_x(0);
+  set_scroll_y((u16)-GAMEPLAY_SCROLL_Y);
 
   ppu_on_all();
 
@@ -243,7 +244,7 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
   START_MESEN_WATCH("sprites");
   if (level.signal.active) {
     u8 x = level.signal.x.as_i();
-    u8 y = level.signal.y.as_i();
+    u8 y = level.signal.y.as_i() + GAMEPLAY_SCROLL_Y;
     banked_oam_meta_spr(x, y, (u8 *)Metasprites::Signal);
   }
 
@@ -275,12 +276,14 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
           (Coord)(CARD_START_INDEX + (Level::MAX_CARDS - 1) * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)Metasprites::WarningCursor);
+      banked_oam_meta_spr(x, y + GAMEPLAY_SCROLL_Y,
+                          (u8 *)Metasprites::WarningCursor);
     } else {
       Coord card_position = (Coord)(CARD_START_INDEX + player.script_index * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)Metasprites::WritingCursor);
+      banked_oam_meta_spr(x, y + GAMEPLAY_SCROLL_Y,
+                          (u8 *)Metasprites::WritingCursor);
     }
   } else if (execution_index != 0xff) {
     if (execution_index == Level::MAX_CARDS) {
@@ -288,12 +291,14 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
           (Coord)(CARD_START_INDEX + (Level::MAX_CARDS - 1) * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)Metasprites::ProcessingCursor);
+      banked_oam_meta_spr(x, y + GAMEPLAY_SCROLL_Y,
+                          (u8 *)Metasprites::ProcessingCursor);
     } else {
       Coord card_position = (Coord)(CARD_START_INDEX + execution_index * 2);
       u8 x = card_position.column * 16;
       u8 y = card_position.row * 16;
-      banked_oam_meta_spr(x, y, (u8 *)Metasprites::ProcessingCursor);
+      banked_oam_meta_spr(x, y + GAMEPLAY_SCROLL_Y,
+                          (u8 *)Metasprites::ProcessingCursor);
     }
   }
   oam_hide_rest();
