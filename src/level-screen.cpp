@@ -1,13 +1,18 @@
 #include "level-screen.hpp"
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
+#include "common.hpp"
 #include "ggsound.hpp"
 #include "mesen-integration.hpp"
 #include "metasprites.hpp"
 #include "metatiles.hpp"
 #include "robot.hpp"
+#include <mapper.h>
 #include <nesdoug.h>
 #include <neslib.h>
+
+const u8 irq_buffer[] = {
+    GAMEPLAY_SCROLL_Y - 2, 0xfe, 27, 0xf5, 0x00, 0xf6, 0x20, 0x00, 0xff};
 
 __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
     : level(levels[level_number]), level_number(level_number) {
@@ -63,16 +68,17 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
 
   Attributes::update_vram();
 
-  set_scroll_x(0);
-  set_scroll_y((u16)-GAMEPLAY_SCROLL_Y);
+  scroll(0x100, 0);
 
   ppu_on_all();
+  set_irq_ptr(irq_buffer);
 
   pal_fade_to(0, 4);
 }
 
 __attribute__((noinline)) LevelScreen::~LevelScreen() {
   pal_fade_to(4, 0);
+  disable_irq();
   ppu_off();
 }
 
