@@ -23,8 +23,8 @@ LevelSelectScreen::LevelSelectScreen(u8 &selected_level)
     u8 folder_column = i % 4;
     u8 folder_row = i / 4;
 
-    u8 meta_x = folder_column * 3 + 3;
-    u8 meta_y = folder_row * 3 + 4;
+    u8 meta_x = folder_column * 3 + 2;
+    u8 meta_y = folder_row * 3 + 3;
 
     if (level_completed[i]) {
       vram_adr((unsigned int)NTADR_A(meta_x * 2, meta_y * 2));
@@ -100,8 +100,8 @@ __attribute__((noinline)) void LevelSelectScreen::loop() {
       }
     }
 
-    u8 cursor_x = (selected_level % 4 * 3 + 3) * 16 + 8;
-    u8 cursor_y = (selected_level / 4 * 3 + 4) * 16 + 4;
+    u8 cursor_x = (selected_level % 4 * 3 + 2) * 16 + 8;
+    u8 cursor_y = (selected_level / 4 * 3 + 3) * 16 + 4;
 
     banked_oam_meta_spr(cursor_x, cursor_y, (u8 *)Metasprites::MouseCursor);
     oam_hide_rest();
