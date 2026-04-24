@@ -2,6 +2,7 @@
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
 #include "metasprites.hpp"
+#include "utils.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
 
@@ -42,6 +43,9 @@ LevelSelectScreen::LevelSelectScreen(u8 &selected_level)
   }
 
   Attributes::update_vram();
+
+  refresh_high_scores();
+  flush_vram_update2();
 
   scroll(0, 0);
 
@@ -105,5 +109,21 @@ __attribute__((noinline)) void LevelSelectScreen::loop() {
 
     banked_oam_meta_spr(cursor_x, cursor_y, (u8 *)Metasprites::MouseCursor);
     oam_hide_rest();
+    refresh_high_scores();
   }
+}
+
+__attribute__((noinline)) void LevelSelectScreen::refresh_high_scores() {
+  u8 text_buffer[5];
+  u8_to_text(text_buffer, selected_level + 1);
+  multi_vram_buffer_horz(text_buffer, 2, NTADR_A(12, 27));
+
+  int_to_text(text_buffer, best_steps[selected_level]);
+  multi_vram_buffer_horz(text_buffer, 4, NTADR_A(16, 27));
+
+  u8_to_text(text_buffer, best_time_minutes[selected_level]);
+  multi_vram_buffer_horz(text_buffer, 2, NTADR_A(21, 27));
+
+  u8_to_text(text_buffer, best_time_seconds[selected_level]);
+  multi_vram_buffer_horz(text_buffer, 2, NTADR_A(24, 27));
 }
