@@ -82,7 +82,8 @@ __attribute__((noinline)) LevelScreen::~LevelScreen() {
   ppu_off();
 }
 
-void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held) {
+void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held,
+                               u8 &steps) {
   static u8 held_timer = 0;
   const u8 HELD_TIMER_MAX = 8;
   switch (player.state) {
@@ -96,26 +97,35 @@ void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held) {
     if (pressed & PAD_B) {
       player.state = Robot::State::Preparing;
       player.script_index = 0;
+      steps++;
     }
     if ((pressed & PAD_UP) && player.direction != Direction::North) {
       player.direction = Direction::North;
+      steps++;
     } else if ((held & PAD_UP) && held_timer >= HELD_TIMER_MAX) {
       player.move_up();
+      steps++;
     }
     if ((pressed & PAD_DOWN) && player.direction != Direction::South) {
       player.direction = Direction::South;
+      steps++;
     } else if ((held & PAD_DOWN) && held_timer >= HELD_TIMER_MAX) {
       player.move_down();
+      steps++;
     }
     if ((pressed & PAD_LEFT) && player.direction != Direction::West) {
       player.direction = Direction::West;
+      steps++;
     } else if ((held & PAD_LEFT) && held_timer >= HELD_TIMER_MAX) {
       player.move_left();
+      steps++;
     }
     if ((pressed & PAD_RIGHT) && player.direction != Direction::East) {
       player.direction = Direction::East;
+      steps++;
     } else if ((held & PAD_RIGHT) && held_timer >= HELD_TIMER_MAX) {
       player.move_right();
+      steps++;
     }
     clamp_robot_movement(player);
 
@@ -163,6 +173,7 @@ void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held) {
       } else {
         level.signal.script_index = 0;
         send_signal(player);
+        steps++;
       }
     }
     break;
@@ -216,6 +227,11 @@ void LevelScreen::update_paths() {
 }
 __attribute__((noinline)) void LevelScreen::loop() {
   Robot &player = level.robots[0];
+  u8 steps = 0;
+  u8 minutes = 0;
+  u8 seconds = 0;
+  u8 frames = 0;
+  bool completed = false;
   while (current_game_state == GameState::LevelScreen) {
     ppu_wait_nmi();
     START_MESEN_WATCH("gameplay");
@@ -229,7 +245,7 @@ __attribute__((noinline)) void LevelScreen::loop() {
       }
     }
     if (metatile_updates.empty()) {
-      handle_input(player, pressed, held);
+      handle_input(player, pressed, held, steps);
       update_robots();
       update_paths();
       update_signal();
@@ -238,11 +254,40 @@ __attribute__((noinline)) void LevelScreen::loop() {
     render_sprites();
 
     if (player.coord.index == level.exit.index) {
-      level_completed[level_number] = true;
+      completed = true;
       current_game_state = GameState::LevelSelectScreen;
     }
 
+    // NOTE: I could nest the ifs, but it's good to know how many cycles we are
+    // spending in the worst case scenario
+    frames++;
+    if (frames >= 60) {
+      frames = 0;
+      seconds++;
+    }
+    if (seconds >= 60) {
+      seconds = 0;
+      minutes++;
+    }
+    if (minutes > 99) {
+      minutes = 99;
+    }
     STOP_MESEN_WATCH("gameplay");
+  }
+
+  // update high scores
+  if (completed) {
+    level_completed[level_number] = true;
+    if (steps < best_steps[level_number]) {
+      best_steps[level_number] = steps;
+    }
+    if (minutes < best_time_minutes[level_number]) {
+      best_time_minutes[level_number] = minutes;
+      best_time_seconds[level_number] = seconds;
+    } else if (minutes == best_time_minutes[level_number] &&
+               seconds < best_time_seconds[level_number]) {
+      best_time_seconds[level_number] = seconds;
+    }
   }
 }
 
