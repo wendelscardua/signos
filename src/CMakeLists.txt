@@ -30,6 +30,33 @@ add_custom_command(
   DEPENDS ${CMAKE_SOURCE_DIR}/assets/signos.ldtk ${LDTK_TOOL}
 )
 
+
+find_file(
+  ft_to_asm
+  NAMES ft_txt_to_asm.py
+  PATHS "${CMAKE_SOURCE_DIR}/tools"
+)
+
+if (NOT ft_to_asm)
+  message(FATAL_ERROR "Cannot convert soundtrack: Unable to find conversor script ft_txt_to_asm.py")
+endif()
+
+find_program(
+  SOUNDTRACK_ENUMS
+  soundtrack-enums
+  PATHS "${CMAKE_SOURCE_DIR}/tools"
+)
+
+if (NOT SOUNDTRACK_ENUMS)
+  message(FATAL_ERROR "The soundtrack-enums tool is required!")
+endif()
+
+add_custom_command(
+  OUTPUT soundtrack.hpp
+  COMMAND ${SOUNDTRACK_ENUMS} generate ${CMAKE_CURRENT_BINARY_DIR}/soundtrack.hpp ${CMAKE_SOURCE_DIR}/music/soundtrack.txt
+  DEPENDS ${SOUNDTRACK_ENUMS} ${CMAKE_SOURCE_DIR}/music/soundtrack.txt
+)
+
 add_metasprite_asset(SOURCE "metasprites.nss" TARGET "metasprites.cpp" HEADER "metasprites.hpp" BANK 1 NAMESPACE "Metasprites")
 
 add_library(SourceObj
@@ -57,12 +84,12 @@ add_library(SourceObj
 
   assets.s
   animation-defs.s
-  soundtrack.hpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/levels.s
   ${CMAKE_CURRENT_BINARY_DIR}/metatiles.s
   ${CMAKE_CURRENT_BINARY_DIR}/metasprites.cpp 
   ${CMAKE_CURRENT_BINARY_DIR}/animation-defs.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/soundtrack.hpp
 )
 
 find_program(

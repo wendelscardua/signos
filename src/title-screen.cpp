@@ -19,7 +19,7 @@ __attribute__((noinline)) TitleScreen::TitleScreen() {
 
   ppu_on_all();
 
-  GGSound::play_song(Song::Lalala);
+  GGSound::play_song(Song::Startup);
 
   pal_fade_to(0, 4);
 }

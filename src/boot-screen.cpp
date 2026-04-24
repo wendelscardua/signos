@@ -2,6 +2,7 @@
 #include "banked-asset-helpers.hpp"
 #include "charset.hpp"
 #include "common.hpp"
+#include "ggsound.hpp"
 #include "utils.hpp"
 #include <nesdoug.h>
 #include <neslib.h>
@@ -13,7 +14,8 @@ __attribute__((noinline)) BootScreen::BootScreen() {
   oam_clear();
   scroll(0, 0);
   ppu_on_all();
-  pal_fade_to(0, 4);
+  pal_bright(4);
+  GGSound::play_song(Song::Booting);
 }
 
 __attribute__((noinline)) BootScreen::~BootScreen() {
