@@ -17,7 +17,9 @@ void Animation::reset() {
 }
 
 void Animation::update(char x, int y) {
-  banked_oam_meta_spr(x, y, current_cell->metasprite);
+  banked_oam_meta_spr((char)(x + current_cell->delta_x),
+                      (char)(y + current_cell->delta_y),
+                      current_cell->metasprite);
   if (paused) {
     return;
   }

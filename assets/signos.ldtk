@@ -2247,7 +2247,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Player",
-							"__grid": [2,4],
+							"__grid": [2,3],
 							"__pivot": [0,0.417],
 							"__tags": [],
 							"__tile": { "tilesetUid": 2, "x": 64, "y": 0, "w": 16, "h": 32 },
@@ -2256,14 +2256,14 @@
 							"width": 16,
 							"height": 24,
 							"defUid": 3,
-							"px": [32,71],
+							"px": [32,55],
 							"fieldInstances": [],
 							"__worldX": 32,
-							"__worldY": 71
+							"__worldY": 55
 						},
 						{
 							"__identifier": "Exit",
-							"__grid": [13,4],
+							"__grid": [13,3],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": { "tilesetUid": 2, "x": 32, "y": 0, "w": 16, "h": 16 },
@@ -2272,10 +2272,10 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 22,
-							"px": [208,64],
+							"px": [208,48],
 							"fieldInstances": [],
 							"__worldX": 208,
-							"__worldY": 64
+							"__worldY": 48
 						},
 						{
 							"__identifier": "Robot",
