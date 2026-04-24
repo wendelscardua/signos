@@ -35,7 +35,8 @@ void Animation::reskin_update(char x, int y) {
     // change palette to 01
     reskin_metasprite[index] = (reskin_metasprite[index] & ~0b11) | 0b01;
   }
-  banked_oam_meta_spr(x, y, reskin_metasprite);
+  banked_oam_meta_spr((char)(x + current_cell->delta_x),
+                      (char)(y + current_cell->delta_y), reskin_metasprite);
   if (paused) {
     return;
   }

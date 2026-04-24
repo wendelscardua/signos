@@ -4,6 +4,7 @@
 require 'bundler/setup'
 require 'thor'
 require 'yaml'
+require 'irb'
 
 class Animator < Thor
   def self.exit_on_failure?
@@ -28,9 +29,28 @@ class Animator < Thor
       animations.each do |label, cells|
         f.puts ".global #{label}_cells"
         f.puts "#{label}_cells:"
+        cells = cells.map do |cell|
+          if cell.is_a?(Hash)
+            variable, start_value, end_value, step = cell['loop']
+            items = []
+            variable_value = start_value
+            while variable_value < end_value
+              clone = Marshal.load(Marshal.dump(cell['item']))
+              clone[2].transform_values! { |value| value == variable ? variable_value : value }
+              items << clone
+              variable_value += step
+            end
+            items
+          else
+            [cell]
+          end
+        end.flatten(1)
+
         cells.flat_map do |metasprite, duration, flags|
           flags ||= {}
           bits = Array.new(duration, 1)
+          delta_x = flags.delete('delta_x') || 0
+          delta_y = flags.delete('delta_y') || 0
           flags.each do |frame_index, tag|
             scope, tag = tag.split('.')
             flags_dictionary[scope] ||= {}
@@ -54,7 +74,9 @@ class Animator < Thor
             [
               "_ZN#{namespace.size}#{namespace}#{metasprite.size}#{metasprite}E@mos16lo",
               "_ZN#{namespace.size}#{namespace}#{metasprite.size}#{metasprite}E@mos16hi",
-              bits[i]
+              bits[i],
+              delta_x,
+              delta_y,
             ]
           end
         end.each { |values| f.puts ".byte #{values.join(', ')}" } # rubocop:disable Style/MultilineBlockChain
