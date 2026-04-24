@@ -40,7 +40,7 @@ enum class GameState : u8 {
   LevelScreen,
 };
 
-const u32 SIGNATURE = 0x31415926;
+const u32 SIGNATURE = 0x03254419;
 const u8 NUM_LEVELS = 12;
 
 // XXX: prevents robot heads clipping at the top because of 8x16 sprites
@@ -48,6 +48,9 @@ const u8 GAMEPLAY_SCROLL_Y = 3;
 
 extern GameState current_game_state;
 extern volatile u8 level_completed[NUM_LEVELS];
+extern volatile u8 best_time_minutes[NUM_LEVELS];
+extern volatile u8 best_time_seconds[NUM_LEVELS];
+extern volatile u16 best_steps[NUM_LEVELS];
 
 // neslib/nesdoug internal stuff
 

@@ -18,6 +18,12 @@ __attribute__((section(".prg_ram.noinit"))) volatile u32 signature;
 __attribute__((
     section(".prg_ram.noinit"))) volatile u8 level_completed[NUM_LEVELS];
 
+__attribute__((
+    section(".prg_ram.noinit"))) volatile u8 best_time_minutes[NUM_LEVELS];
+__attribute__((
+    section(".prg_ram.noinit"))) volatile u8 best_time_seconds[NUM_LEVELS];
+__attribute__((section(".prg_ram.noinit"))) volatile u16 best_steps[NUM_LEVELS];
+
 static void main_init() {
   set_prg_8000(0);
   set_wram_mode(WRAM_ON);
@@ -47,9 +53,13 @@ static void main_init() {
   }
 
   if (signature != SIGNATURE) {
+    // reset save ram
     signature = SIGNATURE;
     for (u8 i = 0; i < NUM_LEVELS; i++) {
       level_completed[i] = false;
+      best_time_minutes[i] = 99;
+      best_time_seconds[i] = 99;
+      best_steps[i] = 9999;
     }
   }
 

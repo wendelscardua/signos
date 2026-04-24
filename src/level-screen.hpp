@@ -21,7 +21,7 @@ public:
 
   void loop();
 
-  void handle_input(Robot &player, u8 &pressed, u8 &held);
+  void handle_input(Robot &player, u8 &pressed, u8 &held, u8 &steps);
   void draw_card(u8 index);
   void update_robots();
   void update_robot(Robot &robot);
