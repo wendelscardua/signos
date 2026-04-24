@@ -15,6 +15,8 @@
 const u8 irq_buffer[] = {
     GAMEPLAY_SCROLL_Y - 2, 0xfe, 27, 0xf5, 0x00, 0xf6, 0x20, 0x00, 0xff};
 
+__attribute__((section(".prg_ram.noinit"))) u8 robot_indices[Level::MAX_ROBOTS];
+
 __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
     : level(levels[level_number]), level_number(level_number) {
 
@@ -65,6 +67,10 @@ __attribute__((noinline)) LevelScreen::LevelScreen(u8 level_number)
     vram_put(metatiles_dl[metatile]);
     vram_put(metatiles_dr[metatile]);
     Attributes::set(coord.column, coord.row, metatiles_attr[metatile]);
+  }
+
+  for (u8 index = 0; index < Level::MAX_ROBOTS; ++index) {
+    robot_indices[index] = index;
   }
 
   Attributes::update_vram();
@@ -314,18 +320,14 @@ __attribute__((noinline)) void LevelScreen::render_sprites() {
     banked_oam_meta_spr(x, y, (u8 *)Metasprites::Signal);
   }
 
-  u8 robot_indices[Level::MAX_ROBOTS];
-  for (u8 index = 0; index < Level::MAX_ROBOTS; ++index) {
-    robot_indices[index] = index;
-  }
+  // amortized sorting
   for (u8 i = 0; i < level.num_robots - 1; ++i) {
-    for (u8 j = i + 1; j < level.num_robots; ++j) {
-      if (level.robots[robot_indices[i]].coord.row <
-          level.robots[robot_indices[j]].coord.row) {
-        u8 temp = robot_indices[i];
-        robot_indices[i] = robot_indices[j];
-        robot_indices[j] = temp;
-      }
+    u8 j = i + 1;
+    if (level.robots[robot_indices[i]].coord.row <
+        level.robots[robot_indices[j]].coord.row) {
+      u8 temp = robot_indices[i];
+      robot_indices[i] = robot_indices[j];
+      robot_indices[j] = temp;
     }
   }
   for (u8 i = 0; i < level.num_robots; ++i) {
