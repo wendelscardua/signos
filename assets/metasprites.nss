@@ -21,7 +21,7 @@ BtnFrameSelected=0
 BtnFrameNone=0
 BtnSpriteSnap=0
 BtnSprite8x16=1
-BtnForce8x16=1
+BtnForce8x16=0
 MenuBestOffsets=0
 MenuLossy=0
 MenuThreshold=0
@@ -53,14 +53,14 @@ bOAMtextEnableCustomOrder=0
 bOAMtextEnableWarning=0
 bOAMtextJustWarning=0
 VarNullTile=1
-VarBankActive_mapBuffer=4096
+VarBankActive_mapBuffer=0
 VarBankActive_msprBuffer=0
 VarPalBank_mapBuffer=0
 VarPalBank_msprBuffer=0
 VarTileViewTagBuf=0
-VarBgPalCur=1
-VarPalActive=0
-VarTileActive=2
+VarBgPalCur=0
+VarPalActive=1
+VarTileActive=8
 VarBankActive=0
 VarPPUMask=0
 VarPPUMaskSet0=0
@@ -70,8 +70,8 @@ VarPPUMaskSet3=0
 VarPPUMaskGlobal0=0
 VarPPUMaskGlobal1=0
 VarPalBank=0
-VarMetaSpriteActive=22
-VarSpriteActive=1
+VarMetaSpriteActive=21
+VarSpriteActive=3
 VarSpriteGridX=64
 VarSpriteGridY=64
 VarNameW=32
@@ -81,15 +81,15 @@ VarNameViewY=-1
 VarNameViewX2=0
 VarNameViewY2=-1
 VarNameSelectionL=-1
-VarNameSelectionR=24
+VarNameSelectionR=14
 VarNameSelectionT=-1
-VarNameSelectionB=24
+VarNameSelectionB=1
 VarNameCopyW=-1
 VarNameCopyH=-1
-VarCHRSelectionL=2
-VarCHRSelectionR=3
+VarCHRSelectionL=8
+VarCHRSelectionR=10
 VarCHRSelectionT=0
-VarCHRSelectionB=2
+VarCHRSelectionB=1
 VarCHRCopyW=16
 VarCHRCopyH=16
 VarCHRCopyRect=1
@@ -174,7 +174,6 @@ MetaSprite18=RobotUpMove2
 MetaSprite19=ExitFrame1
 MetaSprite20=ExitFrame2
 MetaSprite21=ExitFrame3
-MetaSprite22=ExitFrame4
 
 MetaSpriteBankName=/home/wendel/projects/signos/assets/metasprites
 MetaspritePlayBackCursor=0
@@ -184,7 +183,7 @@ FilterCHR=1
 FilterName=1
 FileNameCHR=\\wsl.localhost\Ubuntu\home\wendel\projects\signos\assets\main-spr
 FileNameName=
-FileNamePal=\\wsl.localhost\Ubuntu\home\wendel\projects\signos\assets\main-spr
+FileNamePal=\\wsl.localhost\Ubuntu\home\wendel\projects\signos\assets\main-spr.pal
 FileNameMetaSpriteBank=
 FileNameTileProps=
 FileNameMetatileText=
@@ -198,7 +197,7 @@ RadioAutoexport_UseSubDir_NEXXT=0
 CheckAutoexport_MetatileAsBMP=0
 
 
-VarCHRSelected=00[2]0100[fd]
+VarCHRSelected=00[8]0100[f7]
 
 
 Palette=000f2717000f261600[2]1921000f283b0f1c21320f1122330f1223340f1324350f1324360f1526370f1627370f1928380f1829380f1b2a390f1b2b3c0f1c2c3b
@@ -216,33 +215,33 @@ CHRUndo=ffc080889080[3]003f7f[6]80[6]c0ff7f[6]3f00[15]20[2]001c00071f3f1f[2]3f1f
 CHRCopy=ffc080889080[3]003f7f[6]80[6]c0ff7f[6]3f00[15]20[2]001c00071f3f1f[2]3f1f00[12]3c6a[2]7f[2]7e00fec395[2]81c3fe03[2]0200[2]0900[2]03[3]0f1f363f[2]031f7fff[3]7f007f7c70c090c07f00e0[2]2000[2]9000[2]e0[3]f0f86cfcfee0f3[4]fffe00fe3f1d9d1d63de00[16]0307050003070f[2]0c080a00[15]c0e0a000c0e0f0[2]301050050f0703072318020a0c07031f[2]273d3078[2]f8[4]f02f7f4fff8ffb98f0ff0301[6]00fcfe[6]01[3]09110103fffe[6]fc00b0f0e0c0e0c418405030e0c0f8[2]e4bc0c1e[2]1f[4]0ff4fef2fff1df190f00[15]010200[2]03070f[2]0e0d0f00[15]804000[2]c0e0f0[2]70b0f0020d0703072300020d0e07031f[2]3f3df2faf8fa787c[2]38ed9dff8d7f477c3840b0e0c0e0c400c0b070e0c0f8[2]fc3c0f9f5fdf1e3e[2]1cf779bf31fee23e1c00[2]0c0200a2030e00[2]0c0200a2030f46250b016308040047270b0163080400[3]6004084080f200[2]6004084080f2a47060c444003000e4f0e0c444003000050f0703072318020a0c07031f[2]273d3078[2]f8[4]f03f7f[2]ff[2]fbf8f0b0f0e0c0e0c418405030e0c0f8[2]e4bc0c1e[2]1f[4]0ffcfe[2]ff[2]df1f0f020d0703072300020d0e07031f[2]3f3df2faf8fa787c[2]38fd[2]fffd7f[2]7c3840b0e0c0e0c400c0b070e0c0f8[2]fc3c0f9f5fdf1e3e[2]1cff7fbf3ffe[2]3e1c00[8c]0103[3]00[4]080c00[2]03[2]131f1713ff[2]80[3]00809000[4]40c040[2]f8[2]0006[6]0e18[7]1000[5]ff[2]e300[4]ff007f[2]e3[2]f7fff7ff00[2]7f[6]ff[2]00[5]f8[2]1900[4]fc06fe[2]19[2]b9f8b8f900[2]fe[3]ff[2]feff[2]00[5]ff[3]00[4]ff007f[2]dfffdfffdfff00[2]727f707f757fff[2]00[5]f8[2]f900[4]fc06fe[2]f9[3]f8[2]f900[2]8efeceff0ffeff[2]00[5]ff[2]fc00[4]ff007f[2]f9f7efff[3]00[2]7f[3]5d727fff[2]00[5]f8[2]f900[4]fc06fe[2]f9[3]f8[2]f900[2]fe[3]ff27feff[2]00[8]c0[7]4000[3bf0]
 
 
-NameTable=0102d7[2]0102d7[2]7172d7[2]7172d7[12]520494[2]520494[2]060894[2]060894[12]42[8]070942[2]070942[12]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[20]42[20]d7[20]94[20]42[20]
+NameTable=0010d7[2]0010d7[2]0305d7[2]0305d7[12]011194[2]011194[2]060894[2]060894[12]42[8]070942[2]070942[12]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[20]42[20]d7[20]94[20]42[20]
 
 
 NameCopy=00[3c0]
 
 
-NameUndo=0102d7[2]0102d7[2]7172d7[2]7172d7[12]520494[2]520494[2]060894[2]060894[12]42[8]070942[2]070942[12]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[20]42[20]d7[20]94[20]42[20]
+NameUndo=0010d7[2]0010d7[2]0305d7[2]0305d7[12]011194[2]011194[2]060894[2]060894[12]42[8]070942[2]070942[12]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[6]d7[12]94[8]42[6]d7[12]42[8]d7[20]94[20]42[20]d7[20]94[20]42[20]
 
 
-AttrTable=0103001100[3c]
+AttrTable=0102001100[3c]
 
 
 AttrCopy=00[40]
 
 
-AttrUndo=0103001100[3c]
+AttrUndo=0102001000[3c]
 
 
-MetaSprites=411101494101[2]41ff[f8]41010341[2]110349ff[f8]2d0300402d0500483d0700403d090048ff[f0]2f0300402f0500483d0700403d090048ff[f0]2d0340482d0540[2]3d0740483d0940[2]ff[f0]2f0340482f0540[2]3d0740483d0940[2]ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]3d1d03403d1f0348ff8eff[f6]303d0348303f035030310340[2]41034038330358ff8eff[ea]303503483037035030310340[2]41034038330358ff[ec]30390348303b035030310340[2]41034038330358ff8eff[ea]370100404703004047050048ff8eff[f2]2d0300422d05004a3d0700403d090048ff[f0]2d0340462d05403e3d0740483d0940[2]ff[f0]2d0b00402d0d00483d2100403d230048ff[f0]2d1500402d1700483d2500403d270048ff[f0]2d0300402d0500483d0700403d09004840000240[2]100248ff[e8]2d0300402d0500483d0700403d09004840002240[2]102248ff[e8]2d0300402d0500483d0720403d09204840002240[2]102248ff[e8]2d0320402d0520483d0720403d09204840002240[2]102248ff[e9]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[fe]
+MetaSprites=411101494101[2]41ff[f8]41010341[2]110349ff[f8]2d0300402d0500483d0700403d090048ff[f0]2f0300402f0500483d0700403d090048ff[f0]2d0340482d0540[2]3d0740483d0940[2]ff[f0]2f0340482f0540[2]3d0740483d0940[2]ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]3d1d03403d1f0348ff8eff[f6]303d0348303f035030310340[2]41034038330358ff8eff[ea]303503483037035030310340[2]41034038330358ff[ec]30390348303b035030310340[2]41034038330358ff8eff[ea]370100404703004047050048ff8eff[f2]2d0300422d05004a3d0700403d090048ff[f0]2d0340462d05403e3d0740483d0940[2]ff[f0]2d0b00402d0d00483d2100403d230048ff[f0]2d1500402d1700483d2500403d270048ff[f0]2d0301402d0501483d0701403d09014840012240[2]112248ff[e8]2d0301402d0501483d0721403d09214840012240[2]112248ff[e8]2d0321402d0521483d0721403d09214840012240[2]112248ff[e9]032040ff052048ff072040ff092048ff012240ff112248ff[e9]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[fe]
 
-MetaSpritesUndo=411101494101[2]41ff[f8]41010341[2]110349ff[f8]2d0300402d0500483d0700403d090048ff[f0]2f0300402f0500483d0700403d090048ff[f0]2d0340482d0540[2]3d0740483d0940[2]ff[f0]2f0340482f0540[2]3d0740483d0940[2]ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]3d1d03403d1f0348ff8eff[f6]303d0348303f035030310340[2]41034038330358ff8eff[ea]303503483037035030310340[2]41034038330358ff[ec]30390348303b035030310340[2]41034038330358ff8eff[ea]370100404703004047050048ff8eff[f2]2d0300422d05004a3d0700403d090048ff[f0]2d0340462d05403e3d0740483d0940[2]ff[f0]2d0b00402d0d00483d2100403d230048ff[f0]2d1500402d1700483d2500403d270048ff[f0]2d0300402d0500483d0700403d09004840000240[2]100248ff[e8]2d0300402d0500483d0700403d09004840002240[2]102248ff[e8]2d0300402d0500483d0720403d09204840002240[2]102248ff[e8]2d0300402d0500483d0720403d09204840002240[2]102248ff[e9]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[fe]
-
-
-MetaSprites_show=1[2]0[3e]1[2]0[3e]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[2]0[3e]1[5]0[3b]1[5]0[3b]1[5]0[3b]1[3]0[3d]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[6]0[3a]1[6]0[3a]1[6]0[3a]1[6]0[3a7a]
+MetaSpritesUndo=411101494101[2]41ff[f8]41010341[2]110349ff[f8]2d0300402d0500483d0700403d090048ff[f0]2f0300402f0500483d0700403d090048ff[f0]2d0340482d0540[2]3d0740483d0940[2]ff[f0]2f0340482f0540[2]3d0740483d0940[2]ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d0b00402d0d00483d0f00403d130048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]2d1500402d1700483d1900403d1b0048ff[f0]3d1d03403d1f0348ff8eff[f6]303d0348303f035030310340[2]41034038330358ff8eff[ea]303503483037035030310340[2]41034038330358ff[ec]30390348303b035030310340[2]41034038330358ff8eff[ea]370100404703004047050048ff8eff[f2]2d0300422d05004a3d0700403d090048ff[f0]2d0340462d05403e3d0740483d0940[2]ff[f0]2d0b00402d0d00483d2100403d230048ff[f0]2d1500402d1700483d2500403d270048ff[f0]2d0300402d0500483d0700403d09004840012240[2]112248ff[e8]2d0300402d0500483d0720403d09204840012240[2]112248ff[e8]2d0320402d0520483d0720403d09204840012240[2]112248ff[e9]032040ff052048ff072040ff092048ff012240ff112248ff[e9]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[ff]8eff[fe]
 
 
-MetaSpritesUndo_show=1[2]0[3e]1[2]0[3e]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[2]0[3e]1[5]0[3b]1[5]0[3b]1[5]0[3b]1[3]0[3d]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[6]0[3a]1[6]0[3a]1[6]0[3a]1[6]0[3a7a]
+MetaSprites_show=1[2]0[3e]1[2]0[3e]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[2]0[3e]1[5]0[3b]1[5]0[3b]1[5]0[3b]1[3]0[3d]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[6]0[3a]1[6]0[3a]1[6]0[3aba]
+
+
+MetaSpritesUndo_show=1[2]0[3e]1[2]0[3e]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[2]0[3e]1[5]0[3b]1[5]0[3b]1[5]0[3b]1[3]0[3d]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[4]0[3c]1[6]0[3a]1[6]0[3a]1[6]0[3aba]
 
 
 CustomTileView=000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff
@@ -380,18 +379,18 @@ MetatileSet_8x8_props=00[2000]
 MetatileSet_8x8_propsUndo=00[2000]
 
 
-MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-MetatileSetLabels_8x8=Unlabeled,Unlabeled
-MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
+MetatileSetLabels_8x8=Unlabeled,Unlabeled
+MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
 
 CHRBankLabels=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-CHRBankLabelsUndo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+CHRBankLabelsUndo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
 32_NTSC_MsprDuration=00000006[100]
 
@@ -561,18 +560,18 @@ Checkpoint_MetatileSet_8x8_props=00[2000]
 Checkpoint_MetatileSet_8x8_propsUndo=00[2000]
 
 
-Checkpoint_MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-Checkpoint_MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_2x2=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_2x2Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-Checkpoint_MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
-Checkpoint_MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_4x4=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_4x4Undo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-Checkpoint_MetatileSetLabels_8x8=Unlabeled,Unlabeled
-Checkpoint_MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_8x8=Unlabeled,Unlabeled
+Checkpoint_MetatileSetLabels_8x8Undo=Unlabeled,Unlabeled
 
-Checkpoint_CHRBankLabels=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_CHRBankLabels=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
-Checkpoint_CHRBankLabelsUndo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
+Checkpoint_CHRBankLabelsUndo=Unlabeled,Unlabeled,Unlabeled,Unlabeled
 
 
 Checkpoint_32_NTSC_MsprDuration=00000006[100]

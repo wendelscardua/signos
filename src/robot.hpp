@@ -15,6 +15,7 @@ public:
     Preparing,
     Signaling,
     Executing,
+    ExitingLevel,
   };
 
   static constexpr fu8_8 SPEED = 1.25_u8_8;
@@ -35,6 +36,7 @@ public:
   Animation move_down_animation{nullptr};
   Animation move_left_animation{nullptr};
   Animation move_right_animation{nullptr};
+  Animation exit_level_animation{nullptr};
 
   Card *script_pointer;
   u8 script_index;

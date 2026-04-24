@@ -14,6 +14,7 @@ Robot::Robot()
   move_down_animation = Animation{&move_down_cells};
   move_left_animation = Animation{&move_left_cells};
   move_right_animation = Animation{&move_right_cells};
+  exit_level_animation = Animation{&exit_level_cells};
 }
 
 bool Robot::scripted() { return script_pointer != nullptr; }
@@ -48,6 +49,7 @@ void Robot::move_right() {
 
 void Robot::render_sprite() {
   Animation *animation = nullptr;
+  bool reskin = true;
   switch (state) {
   case State::Idle:
   case State::Preparing:
@@ -83,10 +85,15 @@ void Robot::render_sprite() {
       animation = &move_down_animation;
       break;
     }
+    break;
+  case State::ExitingLevel:
+    animation = &exit_level_animation;
+    reskin = false;
+    break;
   }
   if (animation != nullptr) {
     banked_lambda(1, [&]() {
-      if (player) {
+      if (player && reskin) {
         animation->reskin_update(x.as_i(), y.as_i() + GAMEPLAY_SCROLL_Y);
       } else {
         animation->update(x.as_i(), y.as_i() + GAMEPLAY_SCROLL_Y);

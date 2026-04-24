@@ -133,6 +133,8 @@ u8 Level::effective_metatile(u8 index) {
       }
     } else if (map_content & MapContent::DoorBit) { // doors
       metatile += 1; // open doors are 1 metatile after closed ones
+    } else if (index == exit.index) {
+      metatile = 0x1e; // exit platform removed (blank metatile)
     }
   } else if (index == entrance.index) {
     metatile = 0x1c;

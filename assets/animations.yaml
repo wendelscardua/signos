@@ -23,4 +23,8 @@ move_up:
   - [ RobotUpMove2, 8 ]
   - [ RobotUpIdle1, 8 ]
 exit_level:
-  - { loop: [ "$y", 0, 16, 1 ], item: [ ExitFrame1, 4, { delta_y: "$y" } ] }
+  - [ ExitFrame1, 12 ]
+  - { loop: [ "$y", 0, -3, -1 ], item: [ ExitFrame1, 12, { delta_y: "$y" } ] }
+  - { loop: [ "$y", -3, 3, 1 ], item: [ ExitFrame1, 18, { delta_y: "$y" } ] }
+  - { loop: [ "$y", 4, 8, 1 ], item: [ ExitFrame2, 12, { delta_y: "$y" } ] }
+  - { loop: [ "$y", 8, 16, 1 ], item: [ ExitFrame3, 9, { delta_y: "$y" } ] }

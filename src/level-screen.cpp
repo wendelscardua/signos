@@ -1,4 +1,5 @@
 #include "level-screen.hpp"
+#include "animation-defs.hpp"
 #include "attributes.hpp"
 #include "banked-asset-helpers.hpp"
 #include "common.hpp"
@@ -181,6 +182,8 @@ void LevelScreen::handle_input(Robot &player, u8 &pressed, u8 &held,
     break;
   case Robot::State::Executing:
     break;
+  case Robot::State::ExitingLevel:
+    break;
   }
 }
 void LevelScreen::update_robots() {
@@ -253,9 +256,11 @@ __attribute__((noinline)) void LevelScreen::loop() {
     update_metatiles();
     render_sprites();
 
-    if (player.coord.index == level.exit.index) {
+    if (player.coord.index == level.exit.index &&
+        player.state == Robot::State::Idle) {
       completed = true;
       current_game_state = GameState::LevelSelectScreen;
+      player.state = Robot::State::ExitingLevel;
     }
 
     // NOTE: I could nest the ifs, but it's good to know how many cycles we are
@@ -277,6 +282,16 @@ __attribute__((noinline)) void LevelScreen::loop() {
 
   // update high scores
   if (completed) {
+
+    level.energy[level.exit.index] = 3;
+    metatile_updates.enqueue(level.exit.index);
+
+    while (!player.exit_level_animation.finished) {
+      ppu_wait_nmi();
+      update_metatiles();
+      render_sprites();
+    }
+
     level_completed[level_number] = true;
     if (steps < best_steps[level_number]) {
       best_steps[level_number] = steps;
@@ -546,6 +561,8 @@ void LevelScreen::update_robot(Robot &robot) {
         }
       }
     }
+    break;
+  case Robot::State::ExitingLevel:
     break;
   }
 }
