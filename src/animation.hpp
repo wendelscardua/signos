@@ -5,6 +5,8 @@
 struct AnimCell {
   const unsigned char *metasprite;
   const u8 flags;
+  const s8 delta_x;
+  const s8 delta_y;
 };
 
 class Animation {

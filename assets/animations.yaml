@@ -22,3 +22,5 @@ move_down:
 move_up:
   - [ RobotUpMove2, 8 ]
   - [ RobotUpIdle1, 8 ]
+exit_level:
+  - { loop: [ "$y", 0, 16, 1 ], item: [ ExitFrame1, 4, { delta_y: "$y" } ] }
