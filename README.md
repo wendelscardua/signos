@@ -1,7 +1,7 @@
 SignOS
 =========
 
-[SignOS](https://wendelscardua.itch.io/miroh-jr) is a puzzle game for NES, made for Ludum Dare 59 (themed "Signal").
+[SignOS](https://wendelscardua.itch.io/signos) is a puzzle game for NES, made for Ludum Dare 59 (themed "Signal").
 
 Licenses
 ========
