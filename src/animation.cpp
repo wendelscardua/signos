@@ -31,9 +31,12 @@ void Animation::update(char x, int y) {
 }
 
 void Animation::reskin_update(char x, int y) {
-  u8 reskin_metasprite[25]; // assuming robot metasprites are 25 bytes
-  memcpy(reskin_metasprite, current_cell->metasprite, 25);
-  for (u8 index = 3; index < 25; index += 4) {
+  // size of robot metasprites (25 using 8x8, 17 using 8x16)
+  static constexpr u8 ROBOT_METASPRITE_SIZE = 17;
+
+  u8 reskin_metasprite[ROBOT_METASPRITE_SIZE];
+  memcpy(reskin_metasprite, current_cell->metasprite, ROBOT_METASPRITE_SIZE);
+  for (u8 index = 3; index < ROBOT_METASPRITE_SIZE; index += 4) {
     // change palette to 01
     reskin_metasprite[index] = (reskin_metasprite[index] & ~0b11) | 0b01;
   }
